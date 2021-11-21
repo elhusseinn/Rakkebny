@@ -36,5 +36,7 @@ public abstract class User {
         return userName;
     }
 
-    public abstract void register();
+    public void login(){}
+
+    public abstract User register();
 }

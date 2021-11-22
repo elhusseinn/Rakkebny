@@ -36,7 +36,7 @@ public abstract class User {
         return userName;
     }
 
-    public abstract Customer login();
+    public abstract User login();
 
-    public abstract Customer register();
+    public abstract User register();
 }

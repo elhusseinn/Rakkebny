@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Driver extends User{
     private String NationalID;
@@ -6,13 +7,55 @@ public class Driver extends User{
 
     @Override
     public Driver login() {
-        return null;
-    }
+        String username;
+        String password;
+        Driver driver=new Driver();
+        Scanner scanner = new Scanner(System.in);
+        try {
+            System.out.println("Please enter a user name: ");
+            username = scanner.nextLine();
+            driver.setUserName(username);
+            System.out.println("Please enter a password: ");
+            password = scanner.nextLine();
+            driver.setPassword(password);
+        } catch (Exception e) {
+            System.out.println("Please try again! ");
+        }
+        return driver;    }
 
     @Override
     public Driver register() {
-        return null;
-    }
+        Driver driver = new Driver();
+        Scanner scanner = new Scanner(System.in);
+        String name;
+        String email;
+        String password;
+        String phoneNo;
+        String NationalID;
+        String drivingLiscence;
+        try {
+            System.out.println("Please enter a user name: ");
+            name = scanner.nextLine();
+            driver.setUserName(name);
+            System.out.println("Please enter an email: ");
+            email = scanner.nextLine();
+            driver.setEmailAddress(email);
+            System.out.println("Please enter a phone number: ");
+            phoneNo = scanner.nextLine();
+            driver.setPhoneNumber(phoneNo);
+            System.out.println("Please enter a password: ");
+            password = scanner.nextLine();
+            driver.setPassword(password);
+            System.out.println("Please enter your nationalID: ");
+            NationalID = scanner.nextLine();
+            driver.setNationalID(NationalID);
+            System.out.println("Please enter a drivingLiscence: ");
+            drivingLiscence= scanner.nextLine();
+            driver.setNationalID(drivingLiscence);
+        } catch (Exception e) {
+            System.out.println("Please try again!");
+        }
+        return driver;    }
 
     private enum status{
         Pending,Registered,Suspended

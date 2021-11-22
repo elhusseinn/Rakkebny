@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Admin extends User{
     private ArrayList <Driver> pendingDriver = new ArrayList <Driver>();
@@ -29,12 +30,49 @@ public class Admin extends User{
 
     @Override
     public User login() {
-        return null;
+        String username;
+        String password;
+        Admin admin = new Admin();
+        Scanner scanner = new Scanner(System.in);
+        try {
+            System.out.println("Please enter a user name: ");
+            username = scanner.nextLine();
+            admin.setUserName(username);
+            System.out.println("Please enter a password: ");
+            password = scanner.nextLine();
+            admin.setPassword(password);
+        } catch (Exception e) {
+            System.out.println("Please try again! ");
+        }
+        return admin;
     }
 
     @Override
     public User register() {
-        return null;
+        Admin admin = new Admin();
+        Scanner scanner = new Scanner(System.in);
+        String name;
+        String email;
+        String password;
+        String phoneNo;
+
+        try {
+            System.out.println("Please enter a user name: ");
+            name = scanner.nextLine();
+            admin.setUserName(name);
+            System.out.println("Please enter an email: ");
+            email = scanner.nextLine();
+            admin.setEmailAddress(email);
+            System.out.println("Please enter a phone number: ");
+            phoneNo = scanner.nextLine();
+            admin.setPhoneNumber(phoneNo);
+            System.out.println("Please enter a password: ");
+            password = scanner.nextLine();
+            admin.setPassword(password);
+        } catch (Exception e) {
+            System.out.println("Please try again!");
+        }
+        return admin;
     }
 /*
     @Override

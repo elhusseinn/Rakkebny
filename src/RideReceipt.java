@@ -5,11 +5,11 @@ public class RideReceipt {
         this.ride = ride;
     }
 
-    public void printRideReceipt_(Ride ride) {
-        System.out.println("The driver is" + ride.getDriver() + "\n" +
-                "The Customer is" + ride.getCustomer() + "\n" +
-                "The Source is" + ride.getSource() + "\n" +
-                "The Destination is" + ride.getDestination() + "\n" +
-                "The Cost is" + ride.getCost() + "\n");
+    public String printRideReceipt_() {
+        return "The driver is" + this.ride.getDriver() + "\n" +
+                "The Customer is" + this.ride.getCustomer() + "\n" +
+                "The Source is" + this.ride.getSource() + "\n" +
+                "The Destination is" + this.ride.getDestination() + "\n" +
+                "The Cost is" + this.ride.getCost() + "\n";
     }
 }

@@ -3,6 +3,17 @@ import java.util.ArrayList;
 public class Driver extends User{
     private String NationalID;
     private String drivingLiscence;
+
+    @Override
+    public Driver login() {
+        return null;
+    }
+
+    @Override
+    public Driver register() {
+        return null;
+    }
+
     private enum status{
         Pending,Registered,Suspended
     }
@@ -52,12 +63,12 @@ public class Driver extends User{
     public void makeOffer(Customer customer,double offer){
 
     }
-
+/*
     @Override
     public void register(String name , String email,String password,String phoneNumber) {
         this.setEmailAddress(email);
         this.setUserName(name);
         this.setPassword(password);
         this.setPhoneNumber(phoneNumber);
-    }
+    }*/
 }

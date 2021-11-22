@@ -28,11 +28,21 @@ public class Admin extends User{
     }
 
     @Override
+    public User login() {
+        return null;
+    }
+
+    @Override
+    public User register() {
+        return null;
+    }
+/*
+    @Override
     public void register(String name , String email,String password,String phoneNumber) {
         this.setEmailAddress(email);
         this.setUserName(name);
         this.setPassword(password);
         this.setPhoneNumber(phoneNumber);
-    }
+    }*/
 
 }

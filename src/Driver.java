@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class Driver extends User{
     private String NationalID;
     private String drivingLiscence;
-
+/*
     @Override
     public Driver login() {
         String username;
@@ -21,7 +21,7 @@ public class Driver extends User{
         } catch (Exception e) {
             System.out.println("Please try again! ");
         }
-        return driver;    }
+        return driver;    }*/
 
     @Override
     public Driver register() {
@@ -104,6 +104,7 @@ public class Driver extends User{
     }
 
     public void makeOffer(Customer customer,double offer){
+
 
     }
 /*

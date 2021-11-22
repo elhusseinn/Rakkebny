@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public abstract class User {
     private String userName;
     private String emailAddress;
@@ -36,7 +38,21 @@ public abstract class User {
         return userName;
     }
 
-    public abstract User login();
+    public  User login(String email,String password){
+        User user = null;
+        Scanner scanner = new Scanner(System.in);
+        try {
+            System.out.println("Please enter a user name: ");
+            email = scanner.nextLine();
+            user.setUserName(email);
+            System.out.println("Please enter a password: ");
+            password = scanner.nextLine();
+            user.setPassword(password);
+        } catch (Exception e) {
+            System.out.println("Please try again! ");
+        }
+        return user;
+    }
 
     public abstract User register();
 }

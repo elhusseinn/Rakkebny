@@ -6,7 +6,7 @@ public class Customer extends User {
         Pending, Registered, Suspended
     }
 
-
+/*
     @Override
     public Customer login() {
         String name;
@@ -25,7 +25,7 @@ public class Customer extends User {
         }
         return dummy;
     }
-
+*/
     @Override
     public Customer register() {
         Customer newCustomer = new Customer();

@@ -5,6 +5,22 @@ public class Customer extends User {
     private enum status{
         Pending,Registered,Suspended
     }
+
+    @Override
+    public void login(User user) {
+        String name;
+        String password;
+        Customer dummy=new Customer();
+        Scanner scanner=new Scanner(System.in);
+        System.out.println("Please enter a user name: ");
+        name=scanner.nextLine();
+        dummy.setUserName(name);
+        System.out.println("Please enter a password: ");
+        password=scanner.nextLine();
+        dummy.setPassword(password);
+
+    }
+    @Override
     public Customer register(){
         Customer newCustomer=new Customer();
         Scanner scanner=new Scanner(System.in);
@@ -25,14 +41,5 @@ public class Customer extends User {
         password=scanner.nextLine();
         newCustomer.setPassword(password);
         return newCustomer;
-    }
-    public void login(Customer user){
-        String name;
-        String password;
-        System.out.println("Please enter a user name: ");
-
-
-
-
     }
 }

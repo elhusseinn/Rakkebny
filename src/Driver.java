@@ -4,24 +4,6 @@ import java.util.Scanner;
 public class Driver extends User{
     private String NationalID;
     private String drivingLiscence;
-/*
-    @Override
-    public Driver login() {
-        String username;
-        String password;
-        Driver driver=new Driver();
-        Scanner scanner = new Scanner(System.in);
-        try {
-            System.out.println("Please enter a user name: ");
-            username = scanner.nextLine();
-            driver.setUserName(username);
-            System.out.println("Please enter a password: ");
-            password = scanner.nextLine();
-            driver.setPassword(password);
-        } catch (Exception e) {
-            System.out.println("Please try again! ");
-        }
-        return driver;    }*/
 
     @Override
     public Driver register() {
@@ -99,14 +81,17 @@ public class Driver extends User{
         favouritePlaces.add(favourites);
     }
 
-    public void listRides(){
-
+    public void listRides() {
+        for (Ride ride : notifications) {
+            System.out.println(ride.getRideReceipt().printRideReceipt_());
+        }
     }
 
-    public void makeOffer(Customer customer,double offer){
+    public void makeOffer(Ride ride,double offer){
+        ride.setCost(offer);
+        }
 
 
-    }
 /*
     @Override
     public void register(String name , String email,String password,String phoneNumber) {

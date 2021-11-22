@@ -1,3 +1,4 @@
+
 public class RideReceipt {
     Ride ride;
 

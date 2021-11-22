@@ -53,7 +53,7 @@ public class Customer extends User {
         return newCustomer;
     }
 
-    public void requestRide() {
+    public Ride requestRide() {
         Ride ride = new Ride();
         String source;
         String destination;
@@ -64,6 +64,6 @@ public class Customer extends User {
         System.out.println("Please enter destination for the ride: ");
         destination = scanner.nextLine();
         ride.setDestination(destination);
-
+        return ride;
     }
 }

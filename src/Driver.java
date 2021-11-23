@@ -1,49 +1,13 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class Driver extends User{
+
+public class Driver extends User implements Register,Notifications,DriverFeatures {
     private String NationalID;
     private String drivingLiscence;
-
-    @Override
-    public Driver register() {
-        Driver driver = new Driver();
-        Scanner scanner = new Scanner(System.in);
-        String name;
-        String email;
-        String password;
-        String phoneNo;
-        String NationalID;
-        String drivingLiscence;
-        try {
-            System.out.println("Please enter a user name: ");
-            name = scanner.nextLine();
-            driver.setUserName(name);
-            System.out.println("Please enter an email: ");
-            email = scanner.nextLine();
-            driver.setEmailAddress(email);
-            System.out.println("Please enter a phone number: ");
-            phoneNo = scanner.nextLine();
-            driver.setPhoneNumber(phoneNo);
-            System.out.println("Please enter a password: ");
-            password = scanner.nextLine();
-            driver.setPassword(password);
-            System.out.println("Please enter your nationalID: ");
-            NationalID = scanner.nextLine();
-            driver.setNationalID(NationalID);
-            System.out.println("Please enter a drivingLiscence: ");
-            drivingLiscence= scanner.nextLine();
-            driver.setNationalID(drivingLiscence);
-        } catch (Exception e) {
-            System.out.println("Please try again!");
-        }
-        return driver;    }
-
-    private enum status{
-        Pending,Registered,Suspended
-    }
-    private ArrayList<Ride>notifications = new ArrayList<Ride>();
-    private ArrayList<String>favouritePlaces = new ArrayList<String>();
+    private Rate rate;
+    private ArrayList<Rate> rates = new ArrayList<Rate>();
+    private ArrayList<Ride> notifications = new ArrayList<Ride>();
+    private ArrayList<String> favouritePlaces = new ArrayList<String>();
 
     public String getNationalID() {
         return NationalID;
@@ -61,25 +25,63 @@ public class Driver extends User{
         this.drivingLiscence = drivingLiscence;
     }
 
-    public ArrayList<Ride> getNotifications() {
-        return notifications;
-    }
-
     public void setNotifications(ArrayList<Ride> notifications) {
         this.notifications = notifications;
     }
 
     public ArrayList<String> getFavouritePlaces() {
+
         return favouritePlaces;
     }
 
-    public void setFavouritePlaces(ArrayList<String> favouritePlaces) {
-        this.favouritePlaces = favouritePlaces;
+    public void setFavouritePlaces(String place) {
+        favouritePlaces.add(place);
     }
 
-    public void addFavourites(String favourites){
+    public void addFavourites(String favourites) {
         favouritePlaces.add(favourites);
     }
+
+    public void makeOffer(Ride ride, double offer) {
+        ride.setCost(offer);
+    }
+
+
+
+    /////Setter & getter
+
+    public void register(User user) {
+        String message = system.GetInstance().accountCheck(user);
+        if (message.equals("")) {
+            system.GetInstance().users.add(user);
+             user.setStatus(status.Pending);
+             system.GetInstance().addDriver(user);
+
+        } else {
+            System.out.println("Something wrong in Driver registration");
+        }
+    }
+
+    @Override
+    public void showAverageRating() {
+        System.out.println(rate.displayRating());
+    }
+
+    public ArrayList<Ride> getNotifications() {
+        return notifications;
+    }
+    public boolean notificationsArray(){
+        if (notifications.isEmpty()){
+            return true;
+        }else{
+            for (int i=0;i<notifications.size();i++){
+                System.out.println(i+1+"-"+ notifications.get(i));
+            }
+            return false;
+        }
+    }
+
+
 
     public void listRides() {
         for (Ride ride : notifications) {
@@ -87,17 +89,20 @@ public class Driver extends User{
         }
     }
 
-    public void makeOffer(Ride ride,double offer){
-        ride.setCost(offer);
-        }
+    public Rate getRate() {
+        return rate;
+    }
 
+    public void setRate(Rate rate) {
+        this.rate = rate;
+    }
 
-/*
+    public void setFavouritePlaces(ArrayList<String> favouritePlaces) {
+        this.favouritePlaces = favouritePlaces;
+    }
+
     @Override
-    public void register(String name , String email,String password,String phoneNumber) {
-        this.setEmailAddress(email);
-        this.setUserName(name);
-        this.setPassword(password);
-        this.setPhoneNumber(phoneNumber);
-    }*/
+    public void notifyCustomer(Ride ride) {
+        ride.getCustomer().rideNotifications.add(ride);
+    }
 }

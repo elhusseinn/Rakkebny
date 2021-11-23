@@ -2,15 +2,16 @@ import java.util.ArrayList;
 
 public class Rate {
     private int value;
-    private double averageRating;
-    private ArrayList<Integer> rating = new ArrayList<Integer>();
+    private double averageRating = 0;
+    private ArrayList<Integer> ratings = new ArrayList<Integer>();
+
 
     public int getValue() {
         return value;
     }
 
     public void setValue(int value) {
-        this.value = value;
+        CalculateAverageRating(value);
     }
 
     public double getAverageRating() {
@@ -22,23 +23,23 @@ public class Rate {
     }
 
     public ArrayList<Integer> getRating() {
-        return rating;
+        return ratings;
     }
 
-    public void setRating(ArrayList<Integer> rating) {
-        this.rating = rating;
+    public double displayRating() {
+        return getAverageRating();
     }
 
-    public void displayRating(Driver driver) {
-
+    public void addRating(int value){
+        ratings.add(value);
     }
 
-    public void showAverageRating(Driver driver) {
-        double rate = 0;
-        double avg;
-        for (int i = 0; i < rating.size(); i++) {
-            rate = (rating.get(i) + rate);
+    public void CalculateAverageRating(double value) {
+          value=0;
+        for (int i = 0; i < ratings.size(); i++) {  //2, 5,6,8,9
+            value = (ratings.get(i) + value);// 0+
         }
-        avg = rate / rating.size();
+        value/=ratings.size();
+        value +=averageRating;
     }
 }

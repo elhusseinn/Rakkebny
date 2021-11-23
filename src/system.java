@@ -1,4 +1,7 @@
-public class system extends DataBase{
+import java.util.ArrayList;
+import java.util.List;
+
+public class system extends DataBase implements rideFeatures{
 
     private static system instance = null;
     private system(){}
@@ -7,7 +10,25 @@ public class system extends DataBase{
         return instance;
 
     }
-  /*  public boolean Authenticate(User user){
+
+    @Override
+    public Driver searchDriver(String place) {
+        Driver choosenDriver=null;
+        for (int i = 0 ;i<GetInstance().users.size();i++){
+            if (GetInstance().getUsers().get(i) instanceof Driver){
+                choosenDriver = (Driver) GetInstance().getUsers().get(i);
+                for (int v = 0 ;v<choosenDriver.getFavouritePlaces().size();v++) {
+                    if (choosenDriver.getFavouritePlaces().get(v).equals(place)) {
+                        return choosenDriver;
+                    }
+                }
+            }
+        }
+        return choosenDriver;
+    }
+
+
+    /*  public boolean Authenticate(User user){
        String type = user.getClass().getName();
 
        if(type.equalsIgnoreCase("customer")){
@@ -43,17 +64,34 @@ public class system extends DataBase{
 
    */
 
-public boolean Authenticate(User user){
+    public boolean Authenticate(User user){
 
-    for(int i = 0; i < users.size(); i++){
-        if(users.get(i).getUserName().equalsIgnoreCase(user.getUserName()) &&
-           users.get(i).getPassword().equals(user.getPassword())){
-            return true;
+        for(int i = 0; i < users.size(); i++){
+            if(users.get(i).getUserName().equalsIgnoreCase(user.getUserName()) &&
+                    users.get(i).getPassword().equals(user.getPassword())){
+                return true;
 
+            }
         }
+        System.out.println("Credentials doesn't match!\n");
+        return false;
     }
-return false;
-}
+
+    public String accountCheck(User user){
+        for(int i = 0; i < users.size(); i++){
+            if(user.getUserName().equalsIgnoreCase(users.get(i).getUserName())){
+                return "Error User name already exists, user name must be unique";
+            }
+        }
+        return "";
+    }
+    public void addDriver(User user) {
+        pendingDrivers.add(user);
+    }
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
 
 
 }

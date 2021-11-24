@@ -6,6 +6,20 @@ public abstract class User {
     private String Password;
     private String phoneNumber;
 
+    protected enum status {
+        Registered, Pending, Suspended, NONE
+    }
+
+    private status stat = status.Registered;
+
+    public status getStatus() {
+        return stat;
+    }
+
+    public void setStatus(status st) {
+        this.stat = st;
+    }
+
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
@@ -38,21 +52,17 @@ public abstract class User {
         return userName;
     }
 
-    public  User login(String email,String password){
-        User user = null;
-        Scanner scanner = new Scanner(System.in);
-        try {
-            System.out.println("Please enter a user name: ");
-            email = scanner.nextLine();
-            user.setUserName(email);
-            System.out.println("Please enter a password: ");
-            password = scanner.nextLine();
-            user.setPassword(password);
-        } catch (Exception e) {
-            System.out.println("Please try again! ");
-        }
-        return user;
-    }
+    public User login(User user) {
+        if (user instanceof Admin) {
+            return system.GetInstance().Authenticate(user);
+        } else {
+            User currUser = system.GetInstance().Authenticate(user);
 
-    public abstract User register();
+            if(currUser == null){
+                System.out.println("You are either not registered or you're still pending");
+                return currUser;
+            }
+            return currUser;
+        }
+    }
 }

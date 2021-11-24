@@ -13,6 +13,14 @@ public class Driver extends User implements Register,Notifications,DriverFeature
         return NationalID;
     }
 
+    public Driver() {
+        this.rate = new Rate();
+        this.setStatus(status.Pending);
+    }
+    public void addNotification(Ride ride){
+        notifications.add(ride);
+    }
+
     public void setNationalID(String nationalID) {
         NationalID = nationalID;
     }
@@ -38,24 +46,17 @@ public class Driver extends User implements Register,Notifications,DriverFeature
         favouritePlaces.add(place);
     }
 
-    public void addFavourites(String favourites) {
-        favouritePlaces.add(favourites);
-    }
-
     public void makeOffer(Ride ride, double offer) {
         ride.setCost(offer);
     }
 
 
 
-    /////Setter & getter
-
     public void register(User user) {
         String message = system.GetInstance().accountCheck(user);
         if (message.equals("")) {
-            system.GetInstance().users.add(user);
-             user.setStatus(status.Pending);
-             system.GetInstance().addDriver(user);
+            user.setStatus(status.Pending);
+             system.GetInstance().addDriver((Driver) user);
 
         } else {
             System.out.println("Something wrong in Driver registration");
@@ -97,12 +98,10 @@ public class Driver extends User implements Register,Notifications,DriverFeature
         this.rate = rate;
     }
 
-    public void setFavouritePlaces(ArrayList<String> favouritePlaces) {
-        this.favouritePlaces = favouritePlaces;
-    }
 
     @Override
     public void notifyCustomer(Ride ride) {
+
         ride.getCustomer().rideNotifications.add(ride);
     }
 }

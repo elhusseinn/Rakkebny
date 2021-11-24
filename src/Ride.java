@@ -1,3 +1,4 @@
+
 public class Ride {
     private String source;
     private String destination;
@@ -5,6 +6,7 @@ public class Ride {
     private Customer customer;
     private RideReceipt rideReceipt;
     private double cost;
+
 
     public RideReceipt getRideReceipt() { return rideReceipt; }
 
@@ -42,7 +44,8 @@ public class Ride {
         this.cost = cost;
     }
 
-    public String notifyRiders(Driver driver, String src) {
-        return "";
+    public void notifyDrivers(Ride ride) {
+        ride.setDriver(system.GetInstance().searchDriver(ride.source));
+        ride.driver.addNotification(ride);
     }
 }

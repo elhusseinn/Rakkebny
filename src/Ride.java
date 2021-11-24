@@ -45,6 +45,7 @@ public class Ride {
     }
 
     public void notifyDrivers(Ride ride) {
-        system.GetInstance().searchDriver(ride.source);
+        ride.setDriver(system.GetInstance().searchDriver(ride.source));
+        ride.driver.addNotification(ride);
     }
 }

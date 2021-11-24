@@ -1,25 +1,27 @@
 import java.util.ArrayList;
 
 public class Rate {
-    private int value;
+    private int value = 0;
     private double averageRating = 0;
-    private ArrayList<Integer> ratings = new ArrayList<Integer>();
+    private ArrayList<Integer> ratings = new ArrayList<>();
+    public Rate(){
 
-
-    public int getValue() {
-        return value;
     }
+
 
     public void setValue(int value) {
         CalculateAverageRating(value);
     }
 
+    public int getValue() {
+        return value;
+    }
     public double getAverageRating() {
         return averageRating;
     }
 
-    public void setAverageRating(double averageRating) {
-        this.averageRating = averageRating;
+    public void setAverageRating(double rate) {
+        this.averageRating = rate;
     }
 
     public ArrayList<Integer> getRating() {

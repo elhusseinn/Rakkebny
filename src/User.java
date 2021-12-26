@@ -1,23 +1,19 @@
-import java.util.Scanner;
-
 public abstract class User {
     private String userName;
     private String emailAddress;
     private String Password;
     private String phoneNumber;
+    private String status;
 
-    protected enum status {
-        Registered, Pending, Suspended, NONE
+SQLiteJDBC db = new SQLiteJDBC();
+
+
+    public String getStatus() {
+        return status;
     }
 
-    private status stat = status.Registered;
-
-    public status getStatus() {
-        return stat;
-    }
-
-    public void setStatus(status st) {
-        this.stat = st;
+    public void setStatus(String st) {
+        status = st;
     }
 
     public void setEmailAddress(String emailAddress) {
@@ -54,9 +50,9 @@ public abstract class User {
 
     public User login(User user) {
         if (user instanceof Admin) {
-            return system.GetInstance().Authenticate(user);
+            return Controller.GetInstance().Authenticate(user);
         } else {
-            User currUser = system.GetInstance().Authenticate(user);
+            User currUser = Controller.GetInstance().Authenticate(user);
 
             if(currUser == null){
                 System.out.println("You are either not registered or you're still pending");

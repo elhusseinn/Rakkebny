@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Customer extends User implements Register{
     public Customer() {
@@ -10,10 +9,10 @@ public class Customer extends User implements Register{
     public ArrayList<Ride> rideNotifications;
 
     public void register(User user) {
-        String message= system.GetInstance().accountCheck(user);
+        String message= Controller.GetInstance().accountCheck(user);
         if (message.equals("")){
-            user.setStatus(status.Registered);
-            system.GetInstance().users.add(user);
+            user.setStatus("Registered");
+            Controller.GetInstance().users.add(user);
         }else{
             System.out.println(message);
         }
@@ -21,10 +20,8 @@ public class Customer extends User implements Register{
 
 
     public void requestRide(String src, String dest, Customer customer) {
-        Ride ride = new Ride();
-        ride.setCustomer(customer);
-        ride.setSource(src);
-        ride.setDestination(dest);
+        Ride ride = new Ride(src, dest, customer);
+        db.insertRide(ride);
         ride.notifyDrivers(ride);
     }
 

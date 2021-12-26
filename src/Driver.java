@@ -6,8 +6,8 @@ public class Driver extends User implements Register,Notifications,DriverFeature
     private String drivingLiscence;
     private Rate rate;
     private ArrayList<Rate> rates = new ArrayList<Rate>();
-    private ArrayList<Ride> notifications = new ArrayList<Ride>();
-    private ArrayList<String> favouritePlaces = new ArrayList<String>();
+    private ArrayList<Ride> notifications = new ArrayList<Ride>(); // same
+    private ArrayList<String> favouritePlaces = new ArrayList<String>(); // mlhash lazma
 
     public String getNationalID() {
         return NationalID;
@@ -15,7 +15,7 @@ public class Driver extends User implements Register,Notifications,DriverFeature
 
     public Driver() {
         this.rate = new Rate();
-        this.setStatus(status.Pending);
+        this.setStatus("Pending");
     }
     public void addNotification(Ride ride){
         notifications.add(ride);
@@ -43,7 +43,7 @@ public class Driver extends User implements Register,Notifications,DriverFeature
     }
 
     public void setFavouritePlaces(String place) {
-        favouritePlaces.add(place);
+        db.insertFavouritePlace(this.getUserName(), place);
     }
 
     public void makeOffer(Ride ride, double offer) {
@@ -53,10 +53,10 @@ public class Driver extends User implements Register,Notifications,DriverFeature
 
 
     public void register(User user) {
-        String message = system.GetInstance().accountCheck(user);
+        String message = Controller.GetInstance().accountCheck(user);
         if (message.equals("")) {
-            user.setStatus(status.Pending);
-             system.GetInstance().addDriver((Driver) user);
+            user.setStatus("Pending");
+             Controller.GetInstance().addDriver((Driver) user);
 
         } else {
             System.out.println("Something wrong in Driver registration");
@@ -69,18 +69,10 @@ public class Driver extends User implements Register,Notifications,DriverFeature
     }
 
     public ArrayList<Ride> getNotifications() {
-        return notifications;
+        return db.getDriverNotification(this);
     }
-    public boolean notificationsArray(){
-        if (notifications.isEmpty()){
-            return true;
-        }else{
-            for (int i=0;i<notifications.size();i++){
-                System.out.println(i+1+"-"+ notifications.get(i));
-            }
-            return false;
-        }
-    }
+
+
 
 
 

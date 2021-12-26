@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public interface rideFeatures {
-    Driver searchDriver(String place);
+    ArrayList<Driver> searchDriver(String place);
 }

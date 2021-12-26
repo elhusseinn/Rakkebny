@@ -793,7 +793,7 @@ public class SQLiteJDBC {
 
     public static void main(String[] args) {
         SQLiteJDBC db = new SQLiteJDBC();
-        db.createCustomerNotificationTable();
+
 
 
     }

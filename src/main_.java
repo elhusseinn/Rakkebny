@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class main_ {
-    //test
+    //
     SQLiteJDBC s = new SQLiteJDBC();
 
     public void logIn() {

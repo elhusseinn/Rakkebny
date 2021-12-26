@@ -792,8 +792,13 @@ public class SQLiteJDBC {
 
     public static void main(String[] args) {
         SQLiteJDBC db = new SQLiteJDBC();
-       // db.createCustomerNotificationTable();
-        db.insertCustomerNotification("dova",50.00);
+       db.CreateCustomerTable();
+       db.CreateDriverTable();
+       db.CreateAdminTable();
+       db.CreateRideTable();
+       db.createDriverNotificationTable();
+       db.createCustomerNotificationTable();
+       db.createFavouritePlacesTable();
 
     }
 

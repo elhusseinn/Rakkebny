@@ -374,6 +374,7 @@ public class SQLiteJDBC {
         System.out.println("Notification added successfully");
     }
 
+
     public Customer getCustomer(String name) {
         Customer cus = new Customer();
         Connection c = null;
@@ -792,13 +793,8 @@ public class SQLiteJDBC {
 
     public static void main(String[] args) {
         SQLiteJDBC db = new SQLiteJDBC();
-       db.CreateCustomerTable();
-       db.CreateDriverTable();
-       db.CreateAdminTable();
-       db.CreateRideTable();
-       db.createDriverNotificationTable();
-       db.createCustomerNotificationTable();
-       db.createFavouritePlacesTable();
+        db.createCustomerNotificationTable();
+
 
     }
 

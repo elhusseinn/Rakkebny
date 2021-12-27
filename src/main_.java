@@ -68,11 +68,11 @@ public class main_ {
                 if (driver.getNotifications().isEmpty()) {
                     System.out.println("You don't have any notifications!\n");
                 } else {
-                    int j=1;
-                    for(int i =0; i < driver.getNotifications().size();i++ ){
-                        System.out.print(j +'-'+" Name-> "+driver.getNotifications().get(i).getCustomer().getUserName() + " ,source-> "+driver.getNotifications().get(i).getSource() + " ,destination-> "+driver.getNotifications().get(i).getDestination() );
+                    int counter = 1 ;
+                    for (int i = 0; i < driver.getNotifications().size(); i++) {
+                        System.out.print( counter + " customerName-> " + driver.getNotifications().get(i).getCustomer().getUserName() + " ,source-> " + driver.getNotifications().get(i).getSource() + " ,destination-> " + driver.getNotifications().get(i).getDestination());
+                        counter++;
                         System.out.println();
-                        j++;
                     }
 
                     System.out.println("Do you want to make an offer(y/n)?\n");
@@ -83,12 +83,9 @@ public class main_ {
                             int rideNumber = 0;
                             rideNumber = scanner.nextByte();
                             System.out.println("Enter the cost that you want: ");
-                            double cost = scanner.nextByte();
-                            driver.makeOffer(driver.getNotifications().get(rideNumber - 1), cost);
-                            System.out.println("Your cost is set successfully!");
-                            // driver.getNotifications().get(rideNumber - 1).setDriver(driver); //Set the driver to the ride
-                            driver.notifyCustomer(driver.getNotifications().get(rideNumber - 1)); //This function will notify the customer
-                            System.out.println("User is notified successfully!");
+                            double cost = scanner.nextDouble();
+                            driver.makeOffer(driver.getNotifications().get(rideNumber-1), cost);
+                            System.out.println("Your cost is set successfully and user notified!");
                             break;
                         case "n":
                             break;
@@ -119,6 +116,7 @@ public class main_ {
 
     public void customerMenu(Customer customer) {
         String mess;
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("1-Request Ride\n2-show ride notifications\n3-logout");
         mess = scanner.nextLine().toLowerCase();
@@ -133,44 +131,50 @@ public class main_ {
             }
 
             case "2" -> {
-                customer.getRideNotifications();
+                for (int i = 0; i < s.getCustomerNotification(customer).size(); i++) {
+                    System.out.println((i + 1) + " Driver Name -> " + s.getCustomerNotification(customer).get(i).getDriver().getUserName() + ", cost -> " + s.getCustomerNotification(customer).get(i).getCost() + "\n");
+                }
+                ;
                 System.out.println("Enter the number of the ride you want to accept\n");
+
                 int rideNumber = 0;
                 rideNumber = scanner.nextByte();
-                System.out.println("Average Rating of the driver: " + customer.rideNotifications.get(rideNumber - 1).getDriver().getRate().getAverageRating());
-                System.out.println("Would you like to accept the Ride(y/n)");
-                scanner.reset();
-                String inp;
-                inp = scanner.nextLine();
-                switch (inp) {
-                    case "y" -> {
-                        System.out.println("you have accepted the ride successfully!\n\n\n\n");
-                        Controller.GetInstance().addCompletedRides(customer.rideNotifications.get(rideNumber - 1));
-                        customer.rideNotifications.get(rideNumber - 1).getDriver().getNotifications().remove(customer.rideNotifications.get(rideNumber - 1));
-                        customer.rideNotifications.remove(rideNumber - 1);
-                        System.out.println("would you like to rate the driver(y/n)");
-                        scanner.reset();
-                        String inp2 = scanner.nextLine();
-                        ;
-                        switch (inp2) {
-                            case "y" -> {
-                                System.out.println("please Enter the number of rating 1-5");
-                                int rate = scanner.nextInt();
-                                customer.rideNotifications.get(rideNumber - 1).getDriver().getRate().addRating(rate);
-                                System.out.println("Driver has been rated successfully!");
-                                customer.rideNotifications.remove(rideNumber - 1);
-                            }
-                            case "n" -> {
-                                customer.rideNotifications.remove(rideNumber - 1);
-                            }
-                        }
-                        break;
-                    }
-                    case "n" -> {
-                        System.out.println("NVM\n");
-                    }
-                }
+                //  System.out.println("Average Rating of the driver: " + customer.rideNotifications.get(rideNumber - 1).getDriver().getRate().getAverageRating());
+                while (true) {
+                    System.out.println("Would you like to accept the Ride(y/n)");
+                    scanner.reset();
+                    String inp;
+                    inp = scanner.nextLine();
+                    switch (inp) {
+                        case "y" -> {
+                            System.out.println("you have accepted the ride successfully!\n\n");
+                            s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), customer.getUserName());
+                            s.changeStatusRide(s.getCustomer(customer.getUserName()), "Done",s.getRide(customer.getUserName()).getSource());
 
+                            System.out.println("would you like to rate the driver(y/n)");
+                            scanner.reset();
+                            String inp2 = scanner.nextLine();
+
+                            switch (inp2) {
+                                case "y" -> {
+                                    System.out.println("please Enter the number of rating 1-5");
+                                    int rate = scanner.nextInt();
+                                    customer.rideNotifications.get(rideNumber - 1).getDriver().getRate().addRating(rate);
+                                    System.out.println("Driver has been rated successfully!");
+                                    customer.rideNotifications.remove(rideNumber - 1);
+                                }
+                                case "n" -> {
+                                    customer.rideNotifications.remove(rideNumber - 1);
+                                }
+                            }
+                            break;
+                        }
+                        case "n" -> {
+                            System.out.println("NVM\n");
+                        }
+                    }
+
+                }
             }
             case "3" -> {
                 System.out.println("NVM\n");
@@ -186,31 +190,29 @@ public class main_ {
         mess = scanner.nextLine();
         switch (mess) {
             case "1":
-                if(s.getPendingDrivers().isEmpty()){
+                if (s.getPendingDrivers().isEmpty()) {
                     System.out.println("There's no current pending requests");
                     break;
                 }
-                for(int i =0; i < s.getPendingDrivers().size(); i++){
-                    System.out.println((i+1)+"-"+ s.getPendingDrivers().get(i).getUserName());
+                for (int i = 0; i < s.getPendingDrivers().size(); i++) {
+                    System.out.println((i + 1) + "-" + s.getPendingDrivers().get(i).getUserName());
                 }
                 System.out.println("Enter the number of the driver you want to verify");
                 int driverNumber = scanner.nextInt();
-                admin.verifyRegistration(s.getDriver(s.getPendingDrivers().get(driverNumber-1).getUserName()));
+                admin.verifyRegistration(s.getDriver(s.getPendingDrivers().get(driverNumber - 1).getUserName()));
                 break;
             case "2":
-                for(int i =0; i < s.getRegisteredUsers().size(); i++){
-                    System.out.println((i+1)+"-"+ s.getRegisteredUsers().get(i).getUserName());
+                for (int i = 0; i < s.getRegisteredUsers().size(); i++) {
+                    System.out.println((i + 1) + "-" + s.getRegisteredUsers().get(i).getUserName());
                 }
 
                 System.out.println("Enter the number of the user you want to suspend");
                 int userNumber = scanner.nextInt();
-                if(s.getRegisteredUsers().get(userNumber-1) instanceof Customer){
-                    admin.SuspendedUser(s.getCustomer(s.getRegisteredUsers().get(userNumber-1).getUserName()));
-                }
-                else if(s.getRegisteredUsers().get(userNumber-1) instanceof Driver){
-                    admin.SuspendedUser(s.getDriver(s.getRegisteredUsers().get(userNumber-1).getUserName()));
-                }
-                else{
+                if (s.getRegisteredUsers().get(userNumber - 1) instanceof Customer) {
+                    admin.SuspendedUser(s.getCustomer(s.getRegisteredUsers().get(userNumber - 1).getUserName()));
+                } else if (s.getRegisteredUsers().get(userNumber - 1) instanceof Driver) {
+                    admin.SuspendedUser(s.getDriver(s.getRegisteredUsers().get(userNumber - 1).getUserName()));
+                } else {
                     System.out.println("Can't suspend this user");
                 }
 
@@ -244,7 +246,7 @@ public class main_ {
         System.out.println("national ID: ");
         mess = scanner.nextLine();
         driver.setNationalID(mess);
-s.insertDriver(driver.getUserName(), driver.getEmailAddress(), driver.getPassword(), driver.getPhoneNumber(), driver.getDrivingLiscence(), driver.getNationalID());
+        s.insertDriver(driver.getUserName(), driver.getEmailAddress(), driver.getPassword(), driver.getPhoneNumber(), driver.getDrivingLiscence(), driver.getNationalID());
         driver.register(driver);
 
 
@@ -302,7 +304,7 @@ s.insertDriver(driver.getUserName(), driver.getEmailAddress(), driver.getPasswor
         Controller.GetInstance().addAdmin(ad1);
         main_ m = new main_();
         while (true) {
-           m.Menu();
+            m.Menu();
 
         }
     }

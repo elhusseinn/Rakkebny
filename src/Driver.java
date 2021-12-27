@@ -6,7 +6,7 @@ public class Driver extends User implements Register,Notifications,DriverFeature
     private String drivingLiscence;
     private Rate rate;
     private ArrayList<Rate> rates = new ArrayList<Rate>();
-    private ArrayList<Ride> notifications = new ArrayList<Ride>(); // same
+    private ArrayList<Ride> notifications = new ArrayList<Ride>();
     private ArrayList<String> favouritePlaces = new ArrayList<String>(); // mlhash lazma
 
     public String getNationalID() {
@@ -38,7 +38,6 @@ public class Driver extends User implements Register,Notifications,DriverFeature
     }
 
     public ArrayList<String> getFavouritePlaces() {
-
         return favouritePlaces;
     }
 
@@ -46,8 +45,11 @@ public class Driver extends User implements Register,Notifications,DriverFeature
         db.insertFavouritePlace(this.getUserName(), place);
     }
 
-    public void makeOffer(Ride ride, double offer) {
-        ride.setCost(offer);
+    public void makeOffer(Ride ride, double cost) {
+//        ride.setCost(offer);
+//
+        db.insertCustomerNotification(this.getUserName(),cost,ride.getCustomer().getUserName());
+
     }
 
 
@@ -74,8 +76,6 @@ public class Driver extends User implements Register,Notifications,DriverFeature
 
 
 
-
-
     public void listRides() {
         for (Ride ride : notifications) {
             System.out.println(ride.getRideReceipt().printRideReceipt_());
@@ -93,7 +93,7 @@ public class Driver extends User implements Register,Notifications,DriverFeature
 
     @Override
     public void notifyCustomer(Ride ride) {
+    db.insertCustomerNotification(ride.getDriver().getUserName(),ride.getCost(),ride.getCustomer().getUserName());
 
-        ride.getCustomer().rideNotifications.add(ride);
     }
 }

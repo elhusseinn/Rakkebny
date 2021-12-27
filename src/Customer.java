@@ -21,13 +21,11 @@ public class Customer extends User implements Register{
 
     public void requestRide(String src, String dest, Customer customer) {
         Ride ride = new Ride(src, dest, customer);
-        db.insertRide(ride);
+        db.insertRide(ride, rideNotifications);
         ride.notifyDrivers(ride);
     }
 
-    public void getRideNotifications() {
-        for (int i=0;i<rideNotifications.size();i++){
-            System.out.println(i+1+"-"+rideNotifications.get(i).toString());
-        }
+    public ArrayList<Ride> getRideNotifications() {
+        return rideNotifications;
     }
 }

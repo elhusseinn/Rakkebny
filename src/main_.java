@@ -1,4 +1,6 @@
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -264,9 +266,8 @@ public class main_ {
 
     }
 
-    public void customerRegister() {
+    public void customerRegister() throws ParseException {
         String mess;
-        Date date;
         Customer newCustomer = new Customer();
         Scanner scanner = new Scanner(System.in);
         System.out.println("welcome to customer registration, please enter your information" + "\n" + "Username: ");
@@ -285,10 +286,19 @@ public class main_ {
         mess = scanner.nextLine();
         newCustomer.setPhoneNumber(mess);
 
+        System.out.println("birthday date (dd/MM/yyy)");
+        mess = scanner.nextLine();
+        String sDate1=mess;
+
+        Date date1=new SimpleDateFormat("dd/MM/yyy").parse(sDate1);
+        java.sql.Date sqlDate = new java.sql.Date(date1.getTime());
+
+        newCustomer.setBirthDate(sqlDate);
+
         newCustomer.register(newCustomer);
     }
 
-    public void Menu() {
+    public void Menu() throws ParseException {
         String mess;
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to registration" + "\n" + "1-Register 2-login");
@@ -308,7 +318,7 @@ public class main_ {
     }
 
 
-    public static void main(String[] args) throws ClassNotFoundException {
+    public static void main(String[] args) throws ClassNotFoundException, ParseException {
 
         main_ m = new main_();
         while (true) {

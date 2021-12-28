@@ -18,7 +18,7 @@ public class SQLiteJDBC {
                     " emailAddress         TEXT    NOT NULL, " +
                     " password            TEXT     NOT NULL, " +
                     " phoneNumber        TEXT  NOT NULL, " +
-                    " BirthDate       DATE  , " +
+                    " BirthDate       DATE , " +
                     " status             TEXT " +
                     " )";
             stmt.executeUpdate(sql);
@@ -196,7 +196,7 @@ public class SQLiteJDBC {
         System.out.println("Table created successfully");
     }
 
-    public void insertCustomer(String Name, String email, String pass, String phone, Date birthdate) {
+    public void insertCustomer(String Name, String email, String pass, String phone, java.sql.Date birthdate) {
         Connection c = null;
 
         try {
@@ -210,7 +210,7 @@ public class SQLiteJDBC {
             pstmt.setString(2, email);
             pstmt.setString(3, pass);
             pstmt.setString(4, phone);
-            pstmt.setDate(5, (java.sql.Date) birthdate);
+            pstmt.setDate(5, birthdate);
             pstmt.executeUpdate();
 
             pstmt.close();
@@ -403,6 +403,7 @@ public class SQLiteJDBC {
                 cus.setPassword(rs.getString("password"));
                 cus.setPhoneNumber(rs.getString("phoneNumber"));
                 cus.setStatus(rs.getString(("status")));
+                cus.setBirthDate(rs.getDate("birthDate"));
             }
 
             rs.close();
@@ -941,8 +942,7 @@ public class SQLiteJDBC {
 
     public static void main(String[] args) {
         SQLiteJDBC db = new SQLiteJDBC();
-
-
+        System.out.println(db.getCustomer("mark").getBirthDate());
     }
 
 

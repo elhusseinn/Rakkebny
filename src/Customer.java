@@ -19,7 +19,7 @@ public class Customer extends User implements Register{
     }
 
     public void register(User user) {
-        db.insertCustomer(user.getUserName(), user.getEmailAddress(), user.getPassword(), user.getPhoneNumber(),getBirthDate());
+        db.insertCustomer(user.getUserName(), user.getEmailAddress(), user.getPassword(), user.getPhoneNumber(), (java.sql.Date) getBirthDate());
     }
 
 

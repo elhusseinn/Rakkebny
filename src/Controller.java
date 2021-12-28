@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Controller extends DataBase implements rideFeatures {
+public class Controller implements rideFeatures {
 
     private static Controller instance = null;
     SQLiteJDBC db = new SQLiteJDBC();
@@ -59,34 +59,6 @@ public class Controller extends DataBase implements rideFeatures {
     }
 
 
-    public String accountCheck(User user) {
-       /* if (user.getStatus().equalsIgnoreCase("suspended")){
-            return "you are suspended";
-        }*/
-
-        for (int i = 0; i < users.size(); i++) {
-            if (user.getUserName().equalsIgnoreCase(users.get(i).getUserName())) {
-                return "Error User name already exists, user name must be unique";
-            }
-        }
-        return "";
-    }
-
-    public void addDriver(Driver driver) {
-        pendingDrivers.add(driver);
-    }
-
-    public ArrayList<User> getUsers() {
-        return users;
-    }
-
-    public void addCompletedRides(Ride ride) {
-        completedRides.add(ride);
-    }
-
-    public void addAdmin(Admin admin) {
-        admins.add(admin);
-    }
 
 
 }

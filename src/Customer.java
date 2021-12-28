@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Customer extends User implements Register{
     public Customer() {
@@ -7,21 +8,24 @@ public class Customer extends User implements Register{
     }
 
     public ArrayList<Ride> rideNotifications;
+    private Date BirthDate;
+
+    public Date getBirthDate() {
+        return BirthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        BirthDate = birthDate;
+    }
 
     public void register(User user) {
-        String message= Controller.GetInstance().accountCheck(user);
-        if (message.equals("")){
-            user.setStatus("Registered");
-            Controller.GetInstance().users.add(user);
-        }else{
-            System.out.println(message);
-        }
+        db.insertCustomer(user.getUserName(), user.getEmailAddress(), user.getPassword(), user.getPhoneNumber(),getBirthDate());
     }
 
 
-    public void requestRide(String src, String dest, Customer customer) {
-        Ride ride = new Ride(src, dest, customer);
-        db.insertRide(ride, rideNotifications);
+    public void requestRide(Ride ride) {
+
+         db.insertRide(ride);
         ride.notifyDrivers(ride);
     }
 

@@ -1,7 +1,9 @@
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class main_ {
-    //
+
     SQLiteJDBC s = new SQLiteJDBC();
 
     public void logIn() {
@@ -69,9 +71,9 @@ public class main_ {
                 if (driver.getNotifications().isEmpty()) {
                     System.out.println("You don't have any notifications!\n");
                 } else {
-                    int counter = 1 ;
+                    int counter = 1;
                     for (int i = 0; i < driver.getNotifications().size(); i++) {
-                        System.out.print( counter + " customerName-> " + driver.getNotifications().get(i).getCustomer().getUserName() + " ,source-> " + driver.getNotifications().get(i).getSource() + " ,destination-> " + driver.getNotifications().get(i).getDestination());
+                        System.out.print(counter + " customerName-> " + driver.getNotifications().get(i).getCustomer().getUserName() + " ,source-> " + driver.getNotifications().get(i).getSource() + " ,destination-> " + driver.getNotifications().get(i).getDestination());
                         counter++;
                         System.out.println();
                     }
@@ -85,7 +87,7 @@ public class main_ {
                             rideNumber = scanner.nextByte();
                             System.out.println("Enter the cost that you want: ");
                             double cost = scanner.nextDouble();
-                            driver.makeOffer(driver.getNotifications().get(rideNumber-1), cost);
+                            driver.makeOffer(driver.getNotifications().get(rideNumber - 1), cost); // customer, source, dest
                             System.out.println("Your cost is set successfully and user notified!");
                             break;
                         case "n":
@@ -102,15 +104,11 @@ public class main_ {
                 driver.setFavouritePlaces(mess);
                 break;
             case "3":
-                System.out.println(driver.getRate().getAverageRating());
+                System.out.println(driver.getAverageRating());
                 break;
 
             case "4":
-                for (int i = 0; i < Controller.GetInstance().completedRides.size(); i++) {
-                    if (driver == Controller.GetInstance().completedRides.get(i).getDriver()) {
-                        System.out.println(Controller.GetInstance().completedRides.get(i).toString());
-                    }
-                }
+                driver.listPreviousRides();
                 break;
         }
     }
@@ -127,53 +125,67 @@ public class main_ {
                 String source = scanner.nextLine().toLowerCase();
                 System.out.println("Please enter destination for the ride: ");
                 String destination = scanner.nextLine().toLowerCase();
-                customer.requestRide(source, destination, customer);
+                Ride ride = new Ride(source, destination, customer);
+
+                customer.requestRide(ride);
 
             }
 
             case "2" -> {
+                if (s.getCustomerNotification(customer).size() == 0) {
+                    System.out.println("you don't have any notifications!");
+                    break;
+                }
                 for (int i = 0; i < s.getCustomerNotification(customer).size(); i++) {
                     System.out.println((i + 1) + " Driver Name -> " + s.getCustomerNotification(customer).get(i).getDriver().getUserName() + ", cost -> " + s.getCustomerNotification(customer).get(i).getCost() + "\n");
                 }
-                ;
+
                 System.out.println("Enter the number of the ride you want to accept\n");
 
                 int rideNumber = 0;
                 rideNumber = scanner.nextByte();
                 //  System.out.println("Average Rating of the driver: " + customer.rideNotifications.get(rideNumber - 1).getDriver().getRate().getAverageRating());
-                while (true) {
+                int jk = 0;
+                while (jk == 0) {
                     System.out.println("Would you like to accept the Ride(y/n)");
-                    scanner.reset();
                     String inp;
                     inp = scanner.nextLine();
                     switch (inp) {
                         case "y" -> {
                             System.out.println("you have accepted the ride successfully!\n\n");
-                            s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), customer.getUserName());
-                            s.changeStatusRide(s.getCustomer(customer.getUserName()), "Done",s.getRide(customer.getUserName()).getSource());
+
 
                             System.out.println("would you like to rate the driver(y/n)");
-                            scanner.reset();
                             String inp2 = scanner.nextLine();
 
                             switch (inp2) {
                                 case "y" -> {
                                     System.out.println("please Enter the number of rating 1-5");
                                     int rate = scanner.nextInt();
-                                    customer.rideNotifications.get(rideNumber - 1).getDriver().getRate().addRating(rate);
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), customer.getUserName(), rate);
+                                    s.deleteNotification(customer.getUserName());
+                                    s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
                                     System.out.println("Driver has been rated successfully!");
-                                    customer.rideNotifications.remove(rideNumber - 1);
+                                    jk++;
+
+
                                 }
                                 case "n" -> {
-                                    customer.rideNotifications.remove(rideNumber - 1);
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), customer.getUserName(), -1);
+                                    s.deleteNotification(customer.getUserName());
+                                    s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
+                                    jk++;
                                 }
+
                             }
-                            break;
+
+
                         }
                         case "n" -> {
                             System.out.println("NVM\n");
                         }
                     }
+
 
                 }
             }
@@ -247,7 +259,6 @@ public class main_ {
         System.out.println("national ID: ");
         mess = scanner.nextLine();
         driver.setNationalID(mess);
-        s.insertDriver(driver.getUserName(), driver.getEmailAddress(), driver.getPassword(), driver.getPhoneNumber(), driver.getDrivingLiscence(), driver.getNationalID());
         driver.register(driver);
 
 
@@ -255,6 +266,7 @@ public class main_ {
 
     public void customerRegister() {
         String mess;
+        Date date;
         Customer newCustomer = new Customer();
         Scanner scanner = new Scanner(System.in);
         System.out.println("welcome to customer registration, please enter your information" + "\n" + "Username: ");
@@ -272,7 +284,6 @@ public class main_ {
         System.out.println("phone number: ");
         mess = scanner.nextLine();
         newCustomer.setPhoneNumber(mess);
-        s.insertCustomer(newCustomer.getUserName(), newCustomer.getEmailAddress(), newCustomer.getPassword(), newCustomer.getPhoneNumber());
 
         newCustomer.register(newCustomer);
     }
@@ -299,10 +310,6 @@ public class main_ {
 
     public static void main(String[] args) throws ClassNotFoundException {
 
-        Admin ad1 = new Admin();
-        ad1.setUserName("mido");
-        ad1.setPassword("mido");
-        Controller.GetInstance().addAdmin(ad1);
         main_ m = new main_();
         while (true) {
             m.Menu();

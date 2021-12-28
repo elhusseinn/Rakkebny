@@ -4,8 +4,17 @@ public class Ride {
     private String destination;
     private Driver driver;
     private Customer customer;
-    private RideReceipt rideReceipt;
     private double cost;
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    private int rate;
 
     SQLiteJDBC db = new SQLiteJDBC();
 
@@ -18,11 +27,6 @@ public class Ride {
     public Ride() {
 
     }
-
-
-    public RideReceipt getRideReceipt() { return rideReceipt; }
-
-    public void setRideReceipt(RideReceipt rideReceipt) { this.rideReceipt = rideReceipt; }
 
     public Driver getDriver() { return driver; }
 
@@ -57,7 +61,7 @@ public class Ride {
     }
 
     public void notifyDrivers(Ride ride) {
-        db.insertDriverNotification(ride.customer.getUserName(), ride.source, ride.destination);
+        db.insertDriverNotification(ride);
     }
 
 }

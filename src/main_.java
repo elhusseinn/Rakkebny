@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class main_ {
 
     SQLiteJDBC s = new SQLiteJDBC();
+    controllerDBManager controllerDBManager = new controllerDBManager();
+    DriverDBManager driverDBManager = new DriverDBManager();
 
     public void logIn() {
         String mess;
@@ -164,7 +166,8 @@ public class main_ {
                                 case "y" -> {
                                     System.out.println("please Enter the number of rating 1-5");
                                     int rate = scanner.nextInt();
-                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), customer.getUserName(), rate);
+
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), s.getRide(customer.getUserName()), rate);
                                     s.deleteNotification(customer.getUserName());
                                     s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
                                     System.out.println("Driver has been rated successfully!");
@@ -173,7 +176,7 @@ public class main_ {
 
                                 }
                                 case "n" -> {
-                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), customer.getUserName(), -1);
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), s.getRide(customer.getUserName()), -1);
                                     s.deleteNotification(customer.getUserName());
                                     s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
                                     jk++;
@@ -214,7 +217,7 @@ public class main_ {
                 }
                 System.out.println("Enter the number of the driver you want to verify");
                 int driverNumber = scanner.nextInt();
-                admin.verifyRegistration(s.getDriver(s.getPendingDrivers().get(driverNumber - 1).getUserName()));
+                admin.verifyRegistration(controllerDBManager.getDriver(s.getPendingDrivers().get(driverNumber - 1).getUserName()));
                 break;
             case "2":
                 for (int i = 0; i < s.getRegisteredUsers().size(); i++) {
@@ -224,9 +227,9 @@ public class main_ {
                 System.out.println("Enter the number of the user you want to suspend");
                 int userNumber = scanner.nextInt();
                 if (s.getRegisteredUsers().get(userNumber - 1) instanceof Customer) {
-                    admin.SuspendedUser(s.getCustomer(s.getRegisteredUsers().get(userNumber - 1).getUserName()));
+                    admin.SuspendedUser(controllerDBManager.getCustomer(s.getRegisteredUsers().get(userNumber - 1).getUserName()));
                 } else if (s.getRegisteredUsers().get(userNumber - 1) instanceof Driver) {
-                    admin.SuspendedUser(s.getDriver(s.getRegisteredUsers().get(userNumber - 1).getUserName()));
+                    admin.SuspendedUser(controllerDBManager.getDriver(s.getRegisteredUsers().get(userNumber - 1).getUserName()));
                 } else {
                     System.out.println("Can't suspend this user");
                 }

@@ -1,10 +1,11 @@
+import java.sql.DriverManager;
 import java.util.ArrayList;
 
 
 public class Driver extends User implements Register {
     private String NationalID;
     private String drivingLiscence;
-
+    DriverDBManager db = new DriverDBManager();
 
     public String getNationalID() {
         return NationalID;

@@ -6,6 +6,8 @@ public class Ride {
     private Customer customer;
     private double cost;
 
+    private RideDBManager RM = new RideDBManager();
+
     public int getRate() {
         return rate;
     }
@@ -61,7 +63,7 @@ public class Ride {
     }
 
     public void notifyDrivers(Ride ride) {
-        db.insertDriverNotification(ride);
+       RM.insertDriverNotification(ride);
     }
 
 }

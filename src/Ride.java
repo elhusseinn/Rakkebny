@@ -5,6 +5,7 @@ public class Ride {
     private Driver driver;
     private Customer customer;
     private double cost;
+    private int rate;
 
     private RideDBManager RM = new RideDBManager();
 
@@ -15,10 +16,6 @@ public class Ride {
     public void setRate(int rate) {
         this.rate = rate;
     }
-
-    private int rate;
-
-    SQLiteJDBC db = new SQLiteJDBC();
 
     public Ride(String source, String destination, Customer customer) {
         this.source = source;

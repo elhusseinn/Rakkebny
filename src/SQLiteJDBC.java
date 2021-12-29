@@ -200,6 +200,32 @@ public class SQLiteJDBC {
         System.out.println("Table created successfully");
     }
 
+    private void CreateEventTable() {
+        Connection c = null;
+        Statement stmt = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+
+
+            stmt = c.createStatement();
+            String sql = "CREATE TABLE Event " +
+                    "(RideID         INTEGER  , " +
+                    "eventName TEXT   ," +
+                    " eventTime         TEXT   , " +
+                    "foreign key (RideID) REFERENCES Ride (RideID)" +
+                    " )";
+            stmt.executeUpdate(sql);
+            stmt.close();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Table created successfully");
+    }
+
     private void insertAdmin(String Name, String email, String pass, String phone) {
         Connection c = null;
         try {
@@ -462,7 +488,7 @@ public class SQLiteJDBC {
 
     public static void main(String[] args) {
         SQLiteJDBC sm = new SQLiteJDBC();
-        sm.CreateRideTable();
+        sm.CreateEventTable();
     }
 
 

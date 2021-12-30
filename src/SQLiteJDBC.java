@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class SQLiteJDBC {
     controllerDBManager controllerDBManager = new controllerDBManager();
+
     DriverDBManager driverDBManager = new DriverDBManager();
 
     private void CreateCustomerTable() {
@@ -52,6 +53,7 @@ public class SQLiteJDBC {
                     " drivingLiscence    TEXT   NOT NULL," +
                     " nationalID         TEXT   NOT NULL," +
                     " averageRating         integer   ," +
+                    " rideStatus         Text   ," +
                     "status              TEXT  " +
 
                     " )";
@@ -108,6 +110,7 @@ public class SQLiteJDBC {
                     " cost        TEXT , " +
                     " driverName           TEXT   ," +
                     " rate             INTEGER ,"+
+                    " noOfPassengers             INTEGER ,"+
                     "foreign key (driverName) REFERENCES Driver (userName)" +
                     "foreign key (customerName) REFERENCES Customer (userName) " +
                     " )";
@@ -161,7 +164,10 @@ public class SQLiteJDBC {
                     "(customerName TEXT PRIMARY KEY  ," +
                     " source     TEXT , " +
                     " destination    TEXT , " +
+                    " RideID    INTEGER , " +
+                    " noOfPassengers             INTEGER ,"+
                     "foreign key (customerName) REFERENCES Customer (userName)" +
+                    "foreign key (RideID) REFERENCES Ride (RideID)" +
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
@@ -214,6 +220,7 @@ public class SQLiteJDBC {
                     "(RideID         INTEGER  , " +
                     "eventName TEXT   ," +
                     " eventTime         TEXT   , " +
+                    " actor         TEXT   , " +
                     "foreign key (RideID) REFERENCES Ride (RideID)" +
                     " )";
             stmt.executeUpdate(sql);
@@ -264,6 +271,38 @@ public class SQLiteJDBC {
             String sql = "SELECT RideID FROM Ride WHERE customerName =  ?  ";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, customerName);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ids.add(rs.getInt("RideID"));
+
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return ids.get(ids.size()-1);
+    }
+
+    public int getRidenumber(String driverName) {
+        Connection c = null;
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "SELECT RideID FROM Ride WHERE driverName =  ?  ";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, driverName);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -485,10 +524,33 @@ public class SQLiteJDBC {
         }
     }
 
+    public void changeStatus(Driver driver, String status) {
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "UPDATE Driver set rideStatus = ? where userName=?;";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, status);
+            pstmt.setString(2, driver.getUserName());
+            pstmt.executeUpdate();
+
+            c.commit();
+            pstmt.close();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
 
     public static void main(String[] args) {
         SQLiteJDBC sm = new SQLiteJDBC();
-        sm.CreateEventTable();
+
+
     }
 
 

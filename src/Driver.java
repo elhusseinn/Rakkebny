@@ -5,7 +5,9 @@ import java.util.ArrayList;
 public class Driver extends User implements Register {
     private String NationalID;
     private String drivingLiscence;
+
     DriverDBManager db = new DriverDBManager();
+    makeOfferEvent makeOfferEvent = new makeOfferEvent();
 
     public String getNationalID() {
         return NationalID;
@@ -35,8 +37,25 @@ public class Driver extends User implements Register {
     public void makeOffer(Ride ride, double cost) {
 
         ride.setCost(cost);
+        makeOfferEvent.action(ride.getRideID(),this.getUserName());
         db.insertCustomerNotification(ride);
 
+    }
+
+    public void arrived(int id,String name, boolean onLocation){
+
+        if(name.equalsIgnoreCase("Location")){
+            arrivedLocationEvent arrivedLocationEvent = new arrivedLocationEvent();
+            arrivedLocationEvent.action(id, this.getUserName());
+            System.out.println("Arrived at Location");
+            onLocation = true;
+
+        }else if (name.equalsIgnoreCase("Destination") & onLocation){
+            arrivedDestinationEvent arrivedDestinationEvent=new arrivedDestinationEvent();
+            arrivedDestinationEvent.action(id, this.getUserName());
+            System.out.println("Arrived at Destination");
+
+        }
     }
 
     public void register(User user) {

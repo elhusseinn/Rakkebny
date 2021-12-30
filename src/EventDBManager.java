@@ -6,10 +6,11 @@ import java.util.Date;
 
 public class EventDBManager {
 
-    public void insertEvent(int ID,String eventName) {
+    public void insertEvent(int ID,String eventName,String actor) {
         Connection c = null;
         String time ;
         time = new Date().toString();
+
 
 
         try {
@@ -17,11 +18,13 @@ public class EventDBManager {
             c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
             c.setAutoCommit(false);
 
-            String sql = "INSERT INTO Event VALUES (? , ?,?)";
+            String sql = "INSERT INTO Event VALUES (? , ?,?,?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setInt(1, ID);
             pstmt.setString(2, eventName);
             pstmt.setString(3,time);
+            pstmt.setString(4, actor);
+
             pstmt.executeUpdate();
 
             pstmt.close();

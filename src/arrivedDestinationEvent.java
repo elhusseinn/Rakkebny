@@ -2,7 +2,7 @@ public class arrivedDestinationEvent implements Event {
 
 
     @Override
-    public void action(int RideID) {
-        eventManager.insertEvent(RideID, "Arrived At destination");
+    public void action(int RideID,  String actor) {
+        eventManager.insertEvent(RideID, "Arrived At destination",actor);
     }
 }

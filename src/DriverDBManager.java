@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class DriverDBManager {
     controllerDBManager controllerDBManager = new controllerDBManager();
+
     public void insertFavouritePlace(String driverName, String place) {
         Connection c = null;
 
@@ -64,7 +65,7 @@ public class DriverDBManager {
             c.setAutoCommit(false);
 
 
-            String sql = "INSERT INTO Driver VALUES (? , ?, ?, ?, ?, ?,?,?)";
+            String sql = "INSERT INTO Driver VALUES (? , ?, ?, ?, ?, ?,?,?,?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, Name);
             pstmt.setString(2, email);
@@ -73,7 +74,8 @@ public class DriverDBManager {
             pstmt.setString(5, drivingLiscence);
             pstmt.setString(6, nationalID);
             pstmt.setInt(7, 0);
-            pstmt.setString(8, "Pending");
+            pstmt.setString(8, "Available");
+            pstmt.setString(9,"Pending" );
             pstmt.executeUpdate();
 
             pstmt.close();
@@ -112,6 +114,8 @@ public class DriverDBManager {
                     ride.setCustomer(controllerDBManager.getCustomer(RS.getString("customerName")));
                     ride.setSource(RS.getString("source"));
                     ride.setDestination(RS.getString("destination"));
+                    ride.setRideID(RS.getInt("RideID"));
+                    ride.setNoOfPassengers(RS.getInt("noOfPassengers"));
                     ride.setDriver(controllerDBManager.getDriver(driver.getUserName()));
                     notifications.add(ride);
                 }
@@ -205,5 +209,37 @@ public class DriverDBManager {
         }
 
         return averageRating / counter;
+    }
+
+    public String getRideStatus(String driverName) {
+        Connection c = null;
+        String status = "";
+
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "SELECT rideStatus FROM Driver WHERE userName =  ?  ";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, driverName);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                status = rs.getString("rideStatus");
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return status;
     }
 }

@@ -12,6 +12,10 @@ AdminDBManager db = new AdminDBManager();
         db.changeStatus(user, "Suspended");
     }
 
+    public void showEvents(int RideID){
+        db.ShowEvent(RideID);
+    }
+
 
 
 

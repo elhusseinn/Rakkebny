@@ -24,11 +24,18 @@ public class Customer extends User implements Register{
     }
 
 
-    public void requestRide(Ride ride) {
+    public int requestRide(Ride ride) {
 
-         cusreg.insertRide(ride);
-        ride.notifyDrivers(ride);
+       int ID = cusreg.insertRide(ride);
+        ride.notifyDrivers(ride, ID);
+        return ID;
     }
+    public void acceptRide(int RideID){
+        acceptRideEvent AER = new acceptRideEvent();
+        AER.action(RideID, this.getUserName());
+
+    }
+
 
     public ArrayList<Ride> getRideNotifications() {
         return rideNotifications;

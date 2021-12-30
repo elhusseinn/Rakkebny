@@ -9,6 +9,7 @@ public class main_ {
     SQLiteJDBC s = new SQLiteJDBC();
     controllerDBManager controllerDBManager = new controllerDBManager();
     DriverDBManager driverDBManager = new DriverDBManager();
+    AdminDBManager adminDBManager = new AdminDBManager();
 
     public void logIn() {
         String mess;
@@ -68,52 +69,71 @@ public class main_ {
     public void driverMenu(Driver driver) {
         String mess;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("1-List all notifications available.\n2- Set a favourite place.\n3- View average rating.\n4- View all previous rides.");
-        mess = scanner.nextLine().toLowerCase();
-        switch (mess) {
-            case "1":
-                if (driver.getNotifications().isEmpty()) {
-                    System.out.println("You don't have any notifications!\n");
-                } else {
-                    int counter = 1;
-                    for (int i = 0; i < driver.getNotifications().size(); i++) {
-                        System.out.print(counter + " customerName-> " + driver.getNotifications().get(i).getCustomer().getUserName() + " ,source-> " + driver.getNotifications().get(i).getSource() + " ,destination-> " + driver.getNotifications().get(i).getDestination());
-                        counter++;
-                        System.out.println();
-                    }
 
-                    System.out.println("Do you want to make an offer(y/n)?\n");
-                    mess = scanner.nextLine().toLowerCase();
-                    switch (mess) {
-                        case "y":
-                            System.out.println("Enter the number of the ride\n");
-                            int rideNumber = 0;
-                            rideNumber = scanner.nextByte();
-                            System.out.println("Enter the cost that you want: ");
-                            double cost = scanner.nextDouble();
-                            driver.makeOffer(driver.getNotifications().get(rideNumber - 1), cost); // customer, source, dest
-                            System.out.println("Your cost is set successfully and user notified!");
-                            break;
-                        case "n":
-                            break;
-                        default:
-                            System.out.println("Something is wrong!");
-                            break;
+        if (driverDBManager.getRideStatus(driver.getUserName()).equalsIgnoreCase("Available")) {
+            System.out.println("1-List all notifications available.\n2- Set a favourite place.\n3- View average rating.\n4- View all previous rides.");
+            mess = scanner.nextLine().toLowerCase();
+            switch (mess) {
+                case "1":
+                    if (driver.getNotifications().isEmpty()) {
+                        System.out.println("You don't have any notifications!\n");
+                    } else {
+                        int counter = 1;
+                        for (int i = 0; i < driver.getNotifications().size(); i++) {
+                            System.out.print(counter + " customerName-> " + driver.getNotifications().get(i).getCustomer().getUserName() + " ,source-> " + driver.getNotifications().get(i).getSource() + " ,destination-> " + driver.getNotifications().get(i).getDestination());
+                            counter++;
+                            System.out.println();
+                        }
+
+                        System.out.println("Do you want to make an offer(y/n)?\n");
+                        mess = scanner.nextLine().toLowerCase();
+                        switch (mess) {
+                            case "y":
+                                System.out.println("Enter the number of the ride\n");
+                                int rideNumber = 0;
+                                rideNumber = scanner.nextByte();
+                                System.out.println("Enter the cost that you want: ");
+                                double cost = scanner.nextDouble();
+                                driver.makeOffer(driver.getNotifications().get(rideNumber - 1), cost); // customer, source, dest, rideID
+                                System.out.println("Your cost is set successfully and user notified!");
+                                break;
+                            case "n":
+                                break;
+                            default:
+                                System.out.println("Something is wrong!");
+                                break;
+                        }
                     }
+                    break;
+                case "2":
+                    System.out.println("Enter a favourite place\n");
+                    mess = scanner.nextLine().toLowerCase();
+                    driver.setFavouritePlaces(mess);
+                    break;
+                case "3":
+                    System.out.println(driver.getAverageRating());
+                    break;
+
+                case "4":
+                    driver.listPreviousRides();
+                    break;
+            }
+        } else if (driverDBManager.getRideStatus(driver.getUserName()).equalsIgnoreCase("onRide")) {
+            int message;
+            boolean onLocation = false;
+            System.out.println("1-Arrived on Location.\n2- Arrived on Destination.\n");
+            message = scanner.nextInt();
+            switch (message) {
+                case 1: {
+                    driver.arrived(s.getRidenumber(driver.getUserName()), "Location",onLocation);
                 }
                 break;
-            case "2":
-                System.out.println("Enter a favourite place\n");
-                mess = scanner.nextLine().toLowerCase();
-                driver.setFavouritePlaces(mess);
+                case 2: {
+                    driver.arrived(s.getRidenumber(driver.getUserName()), "Destination", onLocation);
+                    s.changeStatus(driver, "Available");
+                }
                 break;
-            case "3":
-                System.out.println(driver.getAverageRating());
-                break;
-
-            case "4":
-                driver.listPreviousRides();
-                break;
+            }
         }
     }
 
@@ -129,10 +149,14 @@ public class main_ {
                 String source = scanner.nextLine().toLowerCase();
                 System.out.println("Please enter destination for the ride: ");
                 String destination = scanner.nextLine().toLowerCase();
-                Ride ride = new Ride(source, destination, customer);
-
+                System.out.println("Please enter noOfPassengers for the ride: ");
+                int noOfPassengers=scanner.nextInt();
+                if(noOfPassengers>3){
+                    System.out.println("sorry the number is too much for the car");
+                    break;
+                }
+                Ride ride = new Ride(source, destination, customer,noOfPassengers);
                 customer.requestRide(ride);
-
             }
 
             case "2" -> {
@@ -148,7 +172,7 @@ public class main_ {
 
                 int rideNumber = 0;
                 rideNumber = scanner.nextByte();
-                //  System.out.println("Average Rating of the driver: " + customer.rideNotifications.get(rideNumber - 1).getDriver().getRate().getAverageRating());
+
                 int jk = 0;
                 while (jk == 0) {
                     System.out.println("Would you like to accept the Ride(y/n)");
@@ -156,6 +180,8 @@ public class main_ {
                     inp = scanner.nextLine();
                     switch (inp) {
                         case "y" -> {
+                            customer.acceptRide(s.getRide(customer.getUserName()));
+                            s.changeStatus(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver(), "onRide");
                             System.out.println("you have accepted the ride successfully!\n\n");
 
 
@@ -204,10 +230,10 @@ public class main_ {
     public void adminMenu(Admin admin) {
         String mess;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("1-Show pending verification list\n2-Suspend user");
+        System.out.println("1-Show pending verification list\n2-Suspend user\n3-Show Events");
         mess = scanner.nextLine();
         switch (mess) {
-            case "1":
+            case "1": {
                 if (s.getPendingDrivers().isEmpty()) {
                     System.out.println("There's no current pending requests");
                     break;
@@ -218,8 +244,9 @@ public class main_ {
                 System.out.println("Enter the number of the driver you want to verify");
                 int driverNumber = scanner.nextInt();
                 admin.verifyRegistration(controllerDBManager.getDriver(s.getPendingDrivers().get(driverNumber - 1).getUserName()));
+            }
                 break;
-            case "2":
+            case "2": {
                 for (int i = 0; i < s.getRegisteredUsers().size(); i++) {
                     System.out.println((i + 1) + "-" + s.getRegisteredUsers().get(i).getUserName());
                 }
@@ -233,6 +260,22 @@ public class main_ {
                 } else {
                     System.out.println("Can't suspend this user");
                 }
+            }
+            break;
+            case "3":{
+
+                for(int RideID : adminDBManager.getDistinctRideNumbers()){
+                    System.out.println(RideID);
+                }
+                System.out.println("Choose the number of Ride you want to show: ");
+                int RideID;
+                RideID = scanner.nextInt();
+                for(String event : adminDBManager.ShowEvent(RideID)){
+                    System.out.println(event);
+                }
+
+
+            }
 
         }
     }
@@ -291,9 +334,9 @@ public class main_ {
 
         System.out.println("birthday date (dd/MM/yyy)");
         mess = scanner.nextLine();
-        String sDate1=mess;
+        String sDate1 = mess;
 
-        Date date1=new SimpleDateFormat("dd/MM/yyy").parse(sDate1);
+        Date date1 = new SimpleDateFormat("dd/MM/yyy").parse(sDate1);
         java.sql.Date sqlDate = new java.sql.Date(date1.getTime());
 
         newCustomer.setBirthDate(sqlDate);

@@ -1,6 +1,8 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public  class customerDBManager {
 
@@ -33,20 +35,34 @@ public  class customerDBManager {
 
     }
 
-    public void insertRide(Ride ride) {
+    public int insertRide(Ride ride) {
         Connection c = null;
+        ArrayList<Integer> RideIDs= new ArrayList<>();
 
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
             c.setAutoCommit(false);
 
-            String sql = "INSERT INTO Ride VALUES (null , ? , ?, ?, null , null , null )";
+            String sql = "INSERT INTO Ride VALUES (null , ? , ?, ?, null , null , null,?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, ride.getCustomer().getUserName());
             pstmt.setString(2, ride.getSource());
             pstmt.setString(3, ride.getDestination());
+            pstmt.setInt(4, ride.getNoOfPassengers());
+
             pstmt.executeUpdate();
+            c.commit();
+
+            sql = "SELECT RideID FROM Ride WHERE customerName = ?";
+            pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, ride.getCustomer().getUserName());
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                RideIDs.add(rs.getInt("RideID"));
+            }
+
 
 
             pstmt.close();
@@ -58,7 +74,9 @@ public  class customerDBManager {
         }
         System.out.println("Ride created successfully");
 
+        return RideIDs.get(RideIDs.size()-1);
     }
+
 
 
 }

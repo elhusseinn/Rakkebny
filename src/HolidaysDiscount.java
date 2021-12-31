@@ -1,5 +1,5 @@
-public class HolidaysDiscount extends DiscountDecrator {
-    double discountPercent = 0.05;
+public class HolidaysDiscount extends DiscountDecorator {
+    final double DISCOUNT_PERCENTAGE = 0.05;
 
     public HolidaysDiscount(Discount discount) {
         super(discount);
@@ -7,6 +7,6 @@ public class HolidaysDiscount extends DiscountDecrator {
 
     @Override
     public double getCost() {
-        return super.getCost()*discountPercent;
+        return (super.getCost()) - (super.getCost()*DISCOUNT_PERCENTAGE) ;
     }
 }

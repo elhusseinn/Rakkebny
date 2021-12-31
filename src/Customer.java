@@ -30,6 +30,7 @@ public class Customer extends User implements Register{
         ride.notifyDrivers(ride, ID);
         return ID;
     }
+
     public void acceptRide(int RideID){
         acceptRideEvent AER = new acceptRideEvent();
         AER.action(RideID, this.getUserName());

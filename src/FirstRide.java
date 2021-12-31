@@ -1,11 +1,11 @@
-public class FirstRide extends  DiscountDecrator{
-    double discountPercent = 0.10;
+public class FirstRide extends DiscountDecorator {
+    final double  DISCOUNT_PERCENTAGE = 0.10;
     public FirstRide(Discount discountDecrator) {
         super(discountDecrator);
     }
 
     @Override
     public double getCost() {
-        return super.getCost()*discountPercent;
+        return (super.getCost()) - (super.getCost()*DISCOUNT_PERCENTAGE) ;
     }
 }

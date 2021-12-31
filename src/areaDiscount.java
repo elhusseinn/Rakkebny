@@ -1,5 +1,5 @@
-public class areaDiscount extends DiscountDecrator{
-    double discountPercent = 0.10;
+public class areaDiscount extends DiscountDecorator {
+    final double DISCOUNT_PERCENTAGE = 0.10;
 
     public areaDiscount(Discount discount) {
         super(discount);
@@ -7,6 +7,6 @@ public class areaDiscount extends DiscountDecrator{
 
     @Override
     public double getCost() {
-        return super.getCost()*discountPercent;
+        return (super.getCost()) - (super.getCost()*DISCOUNT_PERCENTAGE);
     }
 }

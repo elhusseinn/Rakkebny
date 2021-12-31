@@ -1,6 +1,5 @@
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -125,11 +124,11 @@ public class main_ {
             message = scanner.nextInt();
             switch (message) {
                 case 1: {
-                    driver.arrived(s.getRidenumber(driver.getUserName()), "Location",onLocation);
+                    driver.arrived(s.getRideNumber(driver.getUserName()), "Location",onLocation);
                 }
                 break;
                 case 2: {
-                    driver.arrived(s.getRidenumber(driver.getUserName()), "Destination", onLocation);
+                    driver.arrived(s.getRideNumber(driver.getUserName()), "Destination", onLocation);
                     s.changeStatus(driver, "Available");
                 }
                 break;
@@ -149,10 +148,10 @@ public class main_ {
                 String source = scanner.nextLine().toLowerCase();
                 System.out.println("Please enter destination for the ride: ");
                 String destination = scanner.nextLine().toLowerCase();
-                System.out.println("Please enter noOfPassengers for the ride: ");
+                System.out.println("Please enter number of passengers taking the ride: ");
                 int noOfPassengers=scanner.nextInt();
                 if(noOfPassengers>3){
-                    System.out.println("sorry the number is too much for the car");
+                    System.err.println("sorry, number of passengers out of limit!");
                     break;
                 }
                 Ride ride = new Ride(source, destination, customer,noOfPassengers);
@@ -187,13 +186,14 @@ public class main_ {
 
                             System.out.println("would you like to rate the driver(y/n)");
                             String inp2 = scanner.nextLine();
+                            DiscountExcutor discount = new DiscountExcutor();
+                            double costAfterDiscount=  discount.applyDiscount(s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), s.getRideDestination(s.getRide(customer.getUserName())),s.getRideNoOfPassengers(s.getRide(customer.getUserName()) ),customer.getUserName());
 
                             switch (inp2) {
                                 case "y" -> {
                                     System.out.println("please Enter the number of rating 1-5");
                                     int rate = scanner.nextInt();
-
-                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), s.getRide(customer.getUserName()), rate);
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), costAfterDiscount, s.getRide(customer.getUserName()), rate);
                                     s.deleteNotification(customer.getUserName());
                                     s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
                                     System.out.println("Driver has been rated successfully!");
@@ -202,7 +202,7 @@ public class main_ {
 
                                 }
                                 case "n" -> {
-                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), s.getRide(customer.getUserName()), -1);
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), costAfterDiscount, s.getRide(customer.getUserName()), -1);
                                     s.deleteNotification(customer.getUserName());
                                     s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
                                     jk++;
@@ -227,10 +227,10 @@ public class main_ {
 
     }
 
-    public void adminMenu(Admin admin) {
+    public void adminMenu(Admin admin)  {
         String mess;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("1-Show pending verification list\n2-Suspend user\n3-Show Events");
+        System.out.println("1-Show pending verification list\n2-Suspend user\n3-Show Events\n4-Add area to offered discounts");
         mess = scanner.nextLine();
         switch (mess) {
             case "1": {
@@ -270,9 +270,18 @@ public class main_ {
                 System.out.println("Choose the number of Ride you want to show: ");
                 int RideID;
                 RideID = scanner.nextInt();
-                for(String event : adminDBManager.ShowEvent(RideID)){
-                    System.out.println(event);
-                }
+
+                admin.showEvents(RideID);
+
+
+            }
+            break;
+            case "4":{
+
+                    System.out.println("Enter the Name of the Area : ");
+                    String area;
+                    area=scanner.nextLine();
+                    admin.addAreaToDiscountOffers(area);
 
 
             }

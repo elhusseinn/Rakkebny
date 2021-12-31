@@ -141,4 +141,27 @@ public class controllerDBManager {
 
         return admin;
     }
+
+    public void applyDiscount( double cost, int Id) {
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "UPDATE Ride SET cost = ? WHERE RideID=?";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setDouble(1, cost);
+            pstmt.setInt(2, Id);
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            c.commit();
+            c.close();
+            System.out.println("discount made successfully");
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+    }
 }

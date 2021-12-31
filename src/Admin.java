@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class Admin extends User {
 
 AdminDBManager db = new AdminDBManager();
@@ -13,10 +10,14 @@ AdminDBManager db = new AdminDBManager();
     }
 
     public void showEvents(int RideID){
-        db.ShowEvent(RideID);
+        for(String event : db.ShowEvent(RideID)){
+            System.out.println(event);
+        }
     }
 
-
+public void addAreaToDiscountOffers(String area){
+        db.insertAreaToDiscountOffers(area);
+}
 
 
 

@@ -153,4 +153,26 @@ public class AdminDBManager {
         return rides;
     }
 
+    public void insertAreaToDiscountOffers(String area){
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "INSERT INTO Area VALUES (?)";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, area);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            c.commit();
+            c.close();
+            System.out.println("Area added to discount offers successfully");
+        } catch (Exception e) {
+            System.err.println("area already added, cannot add due to unique constraints");
+        }
+
+    }
+
 }

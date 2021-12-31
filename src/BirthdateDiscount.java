@@ -1,11 +1,11 @@
-public class BirthdateDiscount extends DiscountDecrator{
+public class BirthdateDiscount extends DiscountDecorator {
     public BirthdateDiscount(Discount discount) {
         super(discount);
     }
-    double discountPercent = 0.10;
+    final double DISCOUNT_PERCENTAGE = 0.10;
 
     @Override
     public double getCost() {
-        return super.getCost()*discountPercent;
+        return (super.getCost()) - (super.getCost()*DISCOUNT_PERCENTAGE) ;
     }
 }

@@ -62,6 +62,11 @@ public class Ride implements Discount {
         return cost;
     }
 
+    @Override
+    public void setDiscountCost(double cost) {
+
+    }
+
     public void notifyDrivers(Ride ride, int ID) {
        RM.insertDriverNotification(ride, ID);
     }

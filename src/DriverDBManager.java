@@ -8,12 +8,10 @@ public class DriverDBManager {
     controllerDBManager controllerDBManager = new controllerDBManager();
 
     public void insertFavouritePlace(String driverName, String place) {
-        Connection c = null;
+        Connection c = DBManager.openConnection();
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
             String sql = "INSERT INTO FavouritePlaces VALUES (? , ?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -23,7 +21,7 @@ public class DriverDBManager {
 
             pstmt.close();
             c.commit();
-            c.close();
+            ;
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -33,12 +31,10 @@ public class DriverDBManager {
     }
 
     public void insertCustomerNotification(Ride ride) {
-        Connection c = null;
+        Connection c = DBManager.openConnection();
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
             String sql = "INSERT INTO CustomerNotification VALUES (? , ?,?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -49,7 +45,7 @@ public class DriverDBManager {
 
             pstmt.close();
             c.commit();
-            c.close();
+            ;
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -58,11 +54,9 @@ public class DriverDBManager {
     }
 
     public void insertDriver(String Name, String email, String pass, String phone, String drivingLiscence, String nationalID) {
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
 
             String sql = "INSERT INTO Driver VALUES (? , ?, ?, ?, ?, ?,?,?,?)";
@@ -80,7 +74,7 @@ public class DriverDBManager {
 
             pstmt.close();
             c.commit();
-            c.close();
+            ;
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -91,11 +85,9 @@ public class DriverDBManager {
 
     public ArrayList<Ride> getDriverNotification(Driver driver) {
         ArrayList<Ride> notifications = new ArrayList<Ride>();
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
             String sql = "SELECT source FROM FavouritePlaces WHERE driverName = ?"; // return table of sources for certain driver
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, driver.getUserName());
@@ -124,7 +116,7 @@ public class DriverDBManager {
 
             rs.close();
             pstmt.close();
-            c.close();
+            ;
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -138,11 +130,9 @@ public class DriverDBManager {
     public ArrayList<Ride> getDriversRides(Driver driver) {
 
         ArrayList<Ride> notifications = new ArrayList<>();
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
             String sql = "SELECT * FROM Ride WHERE driverName = ?";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, driver.getUserName());
@@ -165,7 +155,7 @@ public class DriverDBManager {
 
             rs.close();
             pstmt.close();
-            c.close();
+            ;
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -180,11 +170,9 @@ public class DriverDBManager {
     public double getDriverAverageRating(Driver driver){
         double averageRating = 0;
         int counter = 0;
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
             String sql = "SELECT * FROM Ride WHERE driverName =  ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -200,7 +188,7 @@ public class DriverDBManager {
 
             rs.close();
             pstmt.close();
-            c.close();
+            ;
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -212,14 +200,12 @@ public class DriverDBManager {
     }
 
     public String getRideStatus(String driverName) {
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         String status = "";
 
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
             String sql = "SELECT rideStatus FROM Driver WHERE userName =  ?  ";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -232,7 +218,7 @@ public class DriverDBManager {
 
             rs.close();
             pstmt.close();
-            c.close();
+            ;
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());

@@ -3,16 +3,7 @@ import java.util.ArrayList;
 
 public class AdminDBManager {
     public boolean changeStatus(User user, String status) {
-        Connection c = null;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
+        Connection c = DBManager.openConnection();
 
         if (user instanceof Admin) {
             return false;
@@ -26,7 +17,7 @@ public class AdminDBManager {
 
                 c.commit();
                 pstmt.close();
-                c.close();
+                ;
                 return true;
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -42,7 +33,7 @@ public class AdminDBManager {
 
                 c.commit();
                 pstmt.close();
-                c.close();
+                ;
                 return true;
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -56,13 +47,8 @@ public class AdminDBManager {
 
         ArrayList<String> events = new ArrayList<>();
 
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
-
-
             String sql = "SELECT * FROM Event where RideID = ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setInt(1, RideID);
@@ -92,7 +78,7 @@ public class AdminDBManager {
                         ResultSet RS = pstmt.executeQuery();
 
 
-                        events.add("Event name: "+"Arrived At Location "+"Event time: " + rs.getString("eventTime") + " User Name: "+ RS.getString("customerName") + " Driver Name: " + RS.getString("customerName"));
+                        events.add("Event name: "+"Arrived At Location "+"Event time: " + rs.getString("eventTime") + " User Name: "+ RS.getString("customerName") + " Driver Name: " + RS.getString("driverName"));
                         RS.close();
                     }
                     break;
@@ -103,7 +89,7 @@ public class AdminDBManager {
                         ResultSet RS = pstmt.executeQuery();
 
 
-                        events.add("Event name: "+"Arrived At Destination "+"Event time: " + rs.getString("eventTime") + " User Name: "+ RS.getString("customerName") + " Driver Name: " + RS.getString("customerName"));
+                        events.add("Event name: "+"Arrived At Destination "+"Event time: " + rs.getString("eventTime") + " User Name: "+ RS.getString("customerName") + " Driver Name: " + RS.getString("driverName"));
                         RS.close();
                     }
                     break;
@@ -115,7 +101,7 @@ public class AdminDBManager {
             }
 
             rs.close();
-            c.close();
+            ;
             pstmt.close();
 
         } catch (Exception e) {
@@ -128,11 +114,8 @@ public class AdminDBManager {
 
     public ArrayList<Integer> getDistinctRideNumbers(){
         ArrayList<Integer> rides = new ArrayList<>();
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
 
             String sql = "SELECT  RideID FROM Ride ";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -143,7 +126,7 @@ public class AdminDBManager {
 
             pstmt.close();
             rs.close();
-            c.close();
+            ;
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -154,12 +137,8 @@ public class AdminDBManager {
     }
 
     public void insertAreaToDiscountOffers(String area){
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
-
             String sql = "INSERT INTO Area VALUES (?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, area);
@@ -167,7 +146,7 @@ public class AdminDBManager {
             pstmt.close();
 
             c.commit();
-            c.close();
+            ;
             System.out.println("Area added to discount offers successfully");
         } catch (Exception e) {
             System.err.println("area already added, cannot add due to unique constraints");

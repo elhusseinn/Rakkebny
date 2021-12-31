@@ -7,16 +7,14 @@ import java.util.Date;
 public class EventDBManager {
 
     public void insertEvent(int ID,String eventName,String actor) {
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         String time ;
         time = new Date().toString();
 
 
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
             String sql = "INSERT INTO Event VALUES (? , ?,?,?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -29,7 +27,7 @@ public class EventDBManager {
 
             pstmt.close();
             c.commit();
-            c.close();
+            ;
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);

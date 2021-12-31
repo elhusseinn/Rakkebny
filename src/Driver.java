@@ -42,15 +42,15 @@ public class Driver extends User implements Register {
 
     }
 
-    public void arrived(int id,String name, boolean onLocation){
+    public void arrived(int id,String name){
 
         if(name.equalsIgnoreCase("Location")){
             arrivedLocationEvent arrivedLocationEvent = new arrivedLocationEvent();
             arrivedLocationEvent.action(id, this.getUserName());
             System.out.println("Arrived at Location");
-            onLocation = true;
 
-        }else if (name.equalsIgnoreCase("Destination") & onLocation){
+
+        }else if (name.equalsIgnoreCase("Destination")){
             arrivedDestinationEvent arrivedDestinationEvent=new arrivedDestinationEvent();
             arrivedDestinationEvent.action(id, this.getUserName());
             System.out.println("Arrived at Destination");

@@ -119,16 +119,15 @@ public class main_ {
             }
         } else if (driverDBManager.getRideStatus(driver.getUserName()).equalsIgnoreCase("onRide")) {
             int message;
-            boolean onLocation = false;
             System.out.println("1-Arrived on Location.\n2- Arrived on Destination.\n");
             message = scanner.nextInt();
             switch (message) {
                 case 1: {
-                    driver.arrived(s.getRideNumber(driver.getUserName()), "Location",onLocation);
+                    driver.arrived(s.getRideNumber(driver.getUserName()), "Location");
                 }
                 break;
                 case 2: {
-                    driver.arrived(s.getRideNumber(driver.getUserName()), "Destination", onLocation);
+                    driver.arrived(s.getRideNumber(driver.getUserName()), "Destination");
                     s.changeStatus(driver, "Available");
                 }
                 break;
@@ -186,14 +185,16 @@ public class main_ {
 
                             System.out.println("would you like to rate the driver(y/n)");
                             String inp2 = scanner.nextLine();
-                            DiscountExcutor discount = new DiscountExcutor();
-                            double costAfterDiscount=  discount.applyDiscount(s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), s.getRideDestination(s.getRide(customer.getUserName())),s.getRideNoOfPassengers(s.getRide(customer.getUserName()) ),customer.getUserName());
+
+                            DiscountExcutor discountExcutor = new DiscountExcutor();
+                            double cost = discountExcutor.applyDiscount(s.getCustomerNotification(customer).get(rideNumber - 1).getCost(), s.getRideDestination(s.getRide(customer.getUserName())), s.getRideNoOfPassengers(s.getRide(customer.getUserName())), customer.getUserName());
 
                             switch (inp2) {
                                 case "y" -> {
                                     System.out.println("please Enter the number of rating 1-5");
                                     int rate = scanner.nextInt();
-                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), costAfterDiscount, s.getRide(customer.getUserName()), rate);
+
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), cost, s.getRide(customer.getUserName()), rate);
                                     s.deleteNotification(customer.getUserName());
                                     s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
                                     System.out.println("Driver has been rated successfully!");
@@ -202,7 +203,7 @@ public class main_ {
 
                                 }
                                 case "n" -> {
-                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), costAfterDiscount, s.getRide(customer.getUserName()), -1);
+                                    s.updateRide(s.getCustomerNotification(customer).get(rideNumber - 1).getDriver().getUserName(), cost, s.getRide(customer.getUserName()), -1);
                                     s.deleteNotification(customer.getUserName());
                                     s.deleteCustomerNotification(s.getCustomerNotification(customer).get(rideNumber - 1).getCustomer().getUserName());
                                     jk++;

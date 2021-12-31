@@ -7,12 +7,10 @@ import java.util.ArrayList;
 public  class customerDBManager {
 
     public void insertCustomer(String Name, String email, String pass, String phone, java.sql.Date birthdate) {
-        Connection c = null;
+        Connection c = DBManager.openConnection();
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
             String sql = "INSERT INTO Customer VALUES (? , ?, ?, ?,?, 'Registered')";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -26,7 +24,7 @@ public  class customerDBManager {
             pstmt.close();
 
             c.commit();
-            c.close();
+            ;
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -36,13 +34,11 @@ public  class customerDBManager {
     }
 
     public int insertRide(Ride ride) {
-        Connection c = null;
+        Connection c = DBManager.openConnection();
         ArrayList<Integer> RideIDs= new ArrayList<>();
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
-            c.setAutoCommit(false);
+
 
             String sql = "INSERT INTO Ride VALUES (null , ? , ?, ?, null , null , null,?)";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -67,7 +63,7 @@ public  class customerDBManager {
 
             pstmt.close();
             c.commit();
-            c.close();
+            ;
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);

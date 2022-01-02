@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Controller implements rideFeatures {
 
     private static Controller instance = null;
-    controllerDBManager db = new controllerDBManager();
+    SQLiteJDBC db = new SQLiteJDBC();
 
     private Controller() {
     }

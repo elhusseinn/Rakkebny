@@ -3,11 +3,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SQLiteJDBC {
-    controllerDBManager controllerDBManager = new controllerDBManager();
-    DriverDBManager driverDBManager = new DriverDBManager();
-
     private void CreateCustomerTable() {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
 
         try {
@@ -21,12 +18,12 @@ public class SQLiteJDBC {
                     " emailAddress         TEXT    NOT NULL, " +
                     " password            TEXT     NOT NULL, " +
                     " phoneNumber        TEXT  NOT NULL, " +
-                    " BirthDate       DATE , " +
+                    " BirthDate       DATE  , " +
                     " status             TEXT " +
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -35,7 +32,7 @@ public class SQLiteJDBC {
     }
 
     private void CreateDriverTable() {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
 
         try {
@@ -52,13 +49,12 @@ public class SQLiteJDBC {
                     " drivingLiscence    TEXT   NOT NULL," +
                     " nationalID         TEXT   NOT NULL," +
                     " averageRating         integer   ," +
-                    " rideStatus         Text   ," +
                     "status              TEXT  " +
 
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -67,7 +63,7 @@ public class SQLiteJDBC {
     }
 
     private void CreateAdminTable() {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
 
         try {
@@ -83,7 +79,7 @@ public class SQLiteJDBC {
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -92,7 +88,7 @@ public class SQLiteJDBC {
     }
 
     private void CreateRideTable() {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
 
         try {
@@ -102,20 +98,18 @@ public class SQLiteJDBC {
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE Ride " +
-                    "(RideID         INTEGER PRIMARY key AUTOINCREMENT, " +
-                    "customerName TEXT   NOT NULL," +
+                    "(customerName TEXT   NOT NULL," +
                     " source         TEXT    NOT NULL, " +
                     " destination           TEXT     NOT NULL, " +
                     " cost        TEXT , " +
                     " driverName           TEXT   ," +
                     " rate             INTEGER ,"+
-                    " noOfPassengers             INTEGER ,"+
                     "foreign key (driverName) REFERENCES Driver (userName)" +
                     "foreign key (customerName) REFERENCES Customer (userName) " +
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -124,7 +118,7 @@ public class SQLiteJDBC {
     }
 
     private void createFavouritePlacesTable() {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
 
         try {
@@ -141,7 +135,7 @@ public class SQLiteJDBC {
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -150,7 +144,7 @@ public class SQLiteJDBC {
     }
 
     private void createDriverNotificationTable() {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
 
         try {
@@ -163,14 +157,11 @@ public class SQLiteJDBC {
                     "(customerName TEXT PRIMARY KEY  ," +
                     " source     TEXT , " +
                     " destination    TEXT , " +
-                    " RideID    INTEGER , " +
-                    " noOfPassengers             INTEGER ,"+
                     "foreign key (customerName) REFERENCES Customer (userName)" +
-                    "foreign key (RideID) REFERENCES Ride (RideID)" +
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -179,7 +170,7 @@ public class SQLiteJDBC {
     }
 
     private void createCustomerNotificationTable() {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
 
         try {
@@ -197,7 +188,7 @@ public class SQLiteJDBC {
                     " )";
             stmt.executeUpdate(sql);
             stmt.close();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -205,60 +196,72 @@ public class SQLiteJDBC {
         System.out.println("Table created successfully");
     }
 
-    private void CreateEventTable() {
-        Connection c = DBManager.openConnection();
-        Statement stmt = null;
+    public void insertCustomer(String Name, String email, String pass, String phone, Date birthdate) {
+        Connection c = null;
 
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
 
+            String sql = "INSERT INTO Customer VALUES (? , ?, ?, ?,?, 'Registered')";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, Name);
+            pstmt.setString(2, email);
+            pstmt.setString(3, pass);
+            pstmt.setString(4, phone);
+            pstmt.setDate(5, (java.sql.Date) birthdate);
+            pstmt.executeUpdate();
 
-            stmt = c.createStatement();
-            String sql = "CREATE TABLE Event " +
-                    "(RideID         INTEGER  , " +
-                    "eventName TEXT   ," +
-                    " eventTime         TEXT   , " +
-                    " actor         TEXT   , " +
-                    "foreign key (RideID) REFERENCES Ride (RideID)" +
-                    " )";
-            stmt.executeUpdate(sql);
-            stmt.close();
-            ;
+            pstmt.close();
+
+            c.commit();
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Table created successfully");
+        System.out.println("Customer created successfully");
+
     }
 
-    private void CreateAreaTable(){
-        Connection c = DBManager.openConnection();
-        Statement stmt = null;
-
+    public void insertDriver(String Name, String email, String pass, String phone, String drivingLiscence, String nationalID) {
+        Connection c = null;
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
 
 
-            stmt = c.createStatement();
-            String sql = "CREATE TABLE Area  " +
-                    "( areaName TEXT PRIMARY key  " +
-                    " )";
-            stmt.executeUpdate(sql);
-            stmt.close();
-            ;
+            String sql = "INSERT INTO Driver VALUES (? , ?, ?, ?, ?, ?,?,?)";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, Name);
+            pstmt.setString(2, email);
+            pstmt.setString(3, pass);
+            pstmt.setString(4, phone);
+            pstmt.setString(5, drivingLiscence);
+            pstmt.setString(6, nationalID);
+            pstmt.setInt(7, 0);
+            pstmt.setString(8, "Pending");
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            c.commit();
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Table created successfully");
+        System.out.println("Driver created successfully");
+
     }
 
     private void insertAdmin(String Name, String email, String pass, String phone) {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         try {
-
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
             String sql = "INSERT INTO Admin VALUES (? , ?, ?, ?)";
@@ -271,7 +274,7 @@ public class SQLiteJDBC {
             pstmt.close();
 
             c.commit();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -279,26 +282,239 @@ public class SQLiteJDBC {
         System.out.println("Admin created successfully");
     }
 
-    public int getRide(String customerName) {
-        Connection c = DBManager.openConnection();
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+    public void insertRide(Ride ride) {
+        Connection c = null;
 
         try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "INSERT INTO Ride VALUES (? , ?, ?, 'Null', 'Null', 'Null')";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, ride.getCustomer().getUserName());
+            pstmt.setString(2, ride.getSource());
+            pstmt.setString(3, ride.getDestination());
+            pstmt.executeUpdate();
 
 
-            String sql = "SELECT RideID FROM Ride WHERE customerName =  ?  ";
+            pstmt.close();
+            c.commit();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Ride created successfully");
+
+    }
+
+    public void insertFavouritePlace(String driverName, String place) {
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "INSERT INTO FavouritePlaces VALUES (? , ?)";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, driverName);
+            pstmt.setString(2, place);
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            c.commit();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("place added successfully");
+
+    }
+
+    public void insertDriverNotification(Ride ride) {
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "INSERT INTO DriverNotification VALUES (? , ?, ?)";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, ride.getCustomer().getUserName());
+            pstmt.setString(2, ride.getSource());
+            pstmt.setString(3, ride.getDestination());
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            c.commit();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Notification added successfully");
+    }
+
+    public void insertCustomerNotification(Ride ride) {
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "INSERT INTO CustomerNotification VALUES (? , ?,?)";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, ride.getDriver().getUserName());
+            pstmt.setDouble(2, ride.getCost());
+            pstmt.setString(3, ride.getCustomer().getUserName());
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            c.commit();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Notification added successfully");
+    }
+
+    public Customer getCustomer(String name) {
+        Customer cus = new Customer();
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "SELECT * FROM CUSTOMER WHERE userName =  ? ";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                cus.setUserName(rs.getString("userName"));
+                cus.setEmailAddress(rs.getString("emailAddress"));
+                cus.setPassword(rs.getString("password"));
+                cus.setPhoneNumber(rs.getString("phoneNumber"));
+                cus.setStatus(rs.getString(("status")));
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return cus;
+    }
+
+    public Driver getDriver(String name) {
+        Driver driv = new Driver();
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+
+            String sql = "SELECT * FROM Driver WHERE userName =  ? ";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                driv.setUserName(rs.getString("userName"));
+                driv.setEmailAddress(rs.getString("emailAddress"));
+                driv.setPassword(rs.getString("password"));
+                driv.setPhoneNumber(rs.getString("phoneNumber"));
+                driv.setDrivingLiscence(rs.getString("drivingLiscence"));
+                driv.setNationalID(rs.getString("nationalID"));
+                driv.setStatus(rs.getString(("status")));
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return driv;
+    }
+
+    public Admin getAdmin(String name) {
+        Admin admin = new Admin();
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "SELECT * FROM ADMIN WHERE userName =  ? ";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                admin.setUserName(rs.getString("userName"));
+                admin.setEmailAddress(rs.getString("emailAddress"));
+                admin.setPassword(rs.getString("password"));
+                admin.setPhoneNumber(rs.getString("phoneNumber"));
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return admin;
+    }
+
+    public Ride getRide(String customerName) {
+        Ride ride= new Ride();
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "SELECT * FROM Ride WHERE customerName =  ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, customerName);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                ids.add(rs.getInt("RideID"));
-
+                ride.setSource(rs.getString("source"));
+                ride.setDestination(rs.getString("Destination"));
+                ride.setCost(rs.getDouble("cost"));
+                ride.setDriver(getDriver(rs.getString("driverName")));
+                ride.setRate(rs.getInt("rate"));
+                ride.setCustomer(getCustomer(customerName));
             }
 
             rs.close();
             pstmt.close();
-            ;
+            c.close();
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -306,108 +522,46 @@ public class SQLiteJDBC {
 
         }
 
-        return ids.get(ids.size()-1);
+        return ride;
     }
 
-    public int getRideNumber(String driverName) {
-        Connection c = DBManager.openConnection();
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-
+    public void getPlaceDrivers(ArrayList<Driver> drivers, String place) { // returns all the drivers that has the source in the favourite
+        Driver driv = new Driver();
+        Connection c = null;
         try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
 
 
-            String sql = "SELECT RideID FROM Ride WHERE driverName =  ?  ";
+            String sql = "SELECT * FROM FavouritePlaces WHERE source =  ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
-            pstmt.setString(1, driverName);
+            pstmt.setString(1, place);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                ids.add(rs.getInt("RideID"));
-
+                driv = getDriver(rs.getString("driverName"));
+                drivers.add(driv);
             }
 
             rs.close();
             pstmt.close();
-            ;
+            c.close();
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
 
         }
-
-        return ids.get(ids.size()-1);
-    }
-
-    public String getRideDestination(int RideID){
-        Connection c = DBManager.openConnection();
-
-
-        try {
-
-
-            String sql = "SELECT destination FROM Ride WHERE RideID =  ? ";
-            PreparedStatement pstmt = c.prepareStatement(sql);
-            pstmt.setInt(1, RideID);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return (rs.getString("destination"));
-
-            }
-
-            rs.close();
-            c.commit();
-            pstmt.close();
-            ;
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-
-        }
-
-
-        return "";
-
-    }
-
-    public int getRideNoOfPassengers(int RideID){
-        Connection c = DBManager.openConnection();
-
-        try {
-
-
-            String sql = "SELECT noOfPassengers FROM Ride WHERE RideID =  ? ";
-            PreparedStatement pstmt = c.prepareStatement(sql);
-            pstmt.setInt(1, RideID);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return (rs.getInt("noOfPassengers"));
-
-            }
-
-            rs.close();
-            c.commit();
-            pstmt.close();
-            ;
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-
-        }
-
-
-        return 1;
 
     }
 
     public void deleteNotification(String name) {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         try {
-
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
 
 
             String sql = "DELETE  FROM DriverNotification WHERE customerName =  ? ";
@@ -418,7 +572,7 @@ public class SQLiteJDBC {
             pstmt.close();
 
             c.commit();
-            ;
+            c.close();
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -428,9 +582,11 @@ public class SQLiteJDBC {
     }
 
     public void deleteCustomerNotification(String name) {
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         try {
-
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
 
 
             String sql = "DELETE  FROM CustomerNotification WHERE customerName =  ? ";
@@ -441,7 +597,7 @@ public class SQLiteJDBC {
             pstmt.close();
 
             c.commit();
-            ;
+            c.close();
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -453,10 +609,12 @@ public class SQLiteJDBC {
     public ArrayList<Driver> getPendingDrivers() {
         ArrayList<Driver> drivers = new ArrayList<>();
 
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
         try {
-
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
 
             stmt = c.createStatement();
             String sql = "SELECT * FROM Driver WHERE status =  'Pending'";
@@ -475,7 +633,7 @@ public class SQLiteJDBC {
             }
 
             rs.close();
-            ;
+            c.close();
             stmt.close();
 
         } catch (Exception e) {
@@ -489,10 +647,12 @@ public class SQLiteJDBC {
     public ArrayList<User> getRegisteredUsers() {
         ArrayList<User> users = new ArrayList<>();
 
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         Statement stmt = null;
         try {
-
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
 
             stmt = c.createStatement();
             String sql = "SELECT * FROM Driver WHERE status =  'Registered'";
@@ -513,7 +673,7 @@ public class SQLiteJDBC {
             }
 
             rs.close();
-            ;
+            c.close();
             stmt.close();
 
         } catch (Exception e) {
@@ -524,12 +684,58 @@ public class SQLiteJDBC {
         return users;
     }
 
+    public  ArrayList<Ride> getDriverNotification(Driver driver) {
+        ArrayList<Ride> notifications = new ArrayList<Ride>();
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+            String sql = "SELECT source FROM FavouritePlaces WHERE driverName = ?"; // return table of sources for certain driver
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, driver.getUserName());
+            ResultSet rs = pstmt.executeQuery();
+
+
+            while (rs.next()) {
+                Ride ride = new Ride();
+                sql = "SELECT * FROM DriverNotification WHERE  source = ?"; //  and source is included in driver's fav area
+                pstmt = c.prepareStatement(sql);
+                pstmt.setString(1, rs.getString("source"));
+
+                ResultSet RS = pstmt.executeQuery();
+                while (RS.next()) {
+                    ride = new Ride();
+                    ride.setCustomer(getCustomer(RS.getString("customerName")));
+                    ride.setSource(RS.getString("source"));
+                    ride.setDestination(RS.getString("destination"));
+                    ride.setDriver(getDriver(driver.getUserName()));
+                    notifications.add(ride);
+                }
+
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return notifications;
+    }  // return list of rides certain driver interested in
+
     public ArrayList<Ride> getCustomerNotification(Customer customer) {
 
         ArrayList<Ride> notifications = new ArrayList<>();
-        Connection c = DBManager.openConnection();
+        Connection c = null;
         try {
-
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
             String sql = "SELECT cost,driverName FROM CustomerNotification WHERE customerName = ?"; // return table of sources for certain driver
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, customer.getUserName());
@@ -538,7 +744,7 @@ public class SQLiteJDBC {
 
             while (rs.next()) {
                 Ride ride = new Ride();
-                ride.setDriver(controllerDBManager.getDriver(rs.getString("driverName")));
+                ride.setDriver(getDriver(rs.getString("driverName")));
                 ride.setCost(rs.getDouble("cost"));
                 ride.setCustomer(customer);
 
@@ -549,7 +755,7 @@ public class SQLiteJDBC {
 
             rs.close();
             pstmt.close();
-            ;
+            c.close();
 
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -561,53 +767,172 @@ public class SQLiteJDBC {
 
     }
 
-    public void updateRide(String driverName, double cost, int Id , int rate) {
-        Connection c = DBManager.openConnection();
+    public ArrayList<Ride> getDriversRides(Driver driver) {
+
+        ArrayList<Ride> notifications = new ArrayList<>();
+        Connection c = null;
         try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+            String sql = "SELECT * FROM Ride WHERE driverName = ?";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, driver.getUserName());
+            ResultSet rs = pstmt.executeQuery();
 
 
-            String sql = "UPDATE Ride SET cost = ?, driverName = ? , rate=? WHERE RideID=?";
+            while (rs.next()) {
+                Ride ride = new Ride();
+                ride.setDriver(getDriver(rs.getString("driverName")));
+                ride.setCost(rs.getDouble("cost"));
+                ride.setCustomer(getCustomer(rs.getString("customerName")));
+                ride.setSource(rs.getString("source"));
+                ride.setRate(rs.getInt("rate"));
+                ride.setDestination(rs.getString("destination"));
+
+
+                notifications.add(ride);
+
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return notifications;
+
+    }
+
+    public double getDriverAverageRating(Driver driver){
+        double averageRating = 0;
+        int counter = 0;
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "SELECT * FROM Ride WHERE driverName =  ? ";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1, driver.getUserName());
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                if(rs.getInt("rate") >= 0){
+                    averageRating += rs.getInt("rate");
+                    counter++;
+                }
+            }
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+
+        }
+
+        return averageRating / counter;
+    }
+
+    public void updateRide(String driverName, double cost, String customerName , int rate) {
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "UPDATE Ride SET cost = ?, driverName = ? , rate=? WHERE customerName = ?";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setDouble(1, cost);
             pstmt.setString(2, driverName);
             pstmt.setInt(3, rate);
-            pstmt.setInt(4, Id);
-
-            pstmt.executeUpdate();
-            c.commit();
-
-            sql = "UPDATE Driver SET averageRating = ? WHERE userName= ?";
-
-            pstmt = c.prepareStatement(sql);
-            pstmt.setDouble(1, driverDBManager.getDriverAverageRating(controllerDBManager.getDriver(driverName)));
-            pstmt.setString(2, driverName);
-
+            pstmt.setString(4, customerName);
             pstmt.executeUpdate();
 
             pstmt.close();
             c.commit();
-            ;
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
     }
 
-    public void changeStatus(Driver driver, String status) {
-        Connection c = DBManager.openConnection();
+    public boolean changeStatus(User user, String status) {
+        Connection c = null;
 
         try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
 
+        if (user instanceof Admin) {
+            return false;
+        } else if (user instanceof Driver) {
+            try {
+                String sql = "UPDATE Driver set status = ? where userName=?;";
+                PreparedStatement pstmt = c.prepareStatement(sql);
+                pstmt.setString(1, status);
+                pstmt.setString(2, user.getUserName());
+                pstmt.executeUpdate();
 
-            String sql = "UPDATE Driver set rideStatus = ? where userName=?;";
+                c.commit();
+                pstmt.close();
+                c.close();
+                return true;
+            } catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                System.exit(0);
+            }
+        } else if (user instanceof Customer) {
+            try {
+                String sql = "UPDATE Customer set status = ? where userName=?;";
+                PreparedStatement pstmt = c.prepareStatement(sql);
+                pstmt.setString(1, status);
+                pstmt.setString(2, user.getUserName());
+                pstmt.executeUpdate();
+
+                c.commit();
+                pstmt.close();
+                c.close();
+                return true;
+            } catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                System.exit(0);
+            }
+        }
+        return false;
+    }
+
+    public void updateRate(String driverName, int AvgRate) {
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:dataBase.db");
+            c.setAutoCommit(false);
+
+            String sql = "UPDATE Driver SET averageRating = ?  WHERE driverName = ?";
             PreparedStatement pstmt = c.prepareStatement(sql);
-            pstmt.setString(1, status);
-            pstmt.setString(2, driver.getUserName());
+            pstmt.setDouble(1, AvgRate);
+            pstmt.setString(2, driverName);
             pstmt.executeUpdate();
 
-            c.commit();
             pstmt.close();
-            ;
+            c.commit();
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -615,20 +940,10 @@ public class SQLiteJDBC {
     }
 
     public static void main(String[] args) {
-        SQLiteJDBC sm = new SQLiteJDBC();
-        sm.CreateAdminTable();
-        sm.CreateCustomerTable();
-        sm.CreateDriverTable();
-        sm.CreateRideTable();
-        sm.createCustomerNotificationTable();
-        sm.createDriverNotificationTable();
-        sm.createFavouritePlacesTable();
-        sm.CreateEventTable();
-        sm.CreateAreaTable();
-        sm.insertAdmin("mido", "mido.com", "123", "561");
+        SQLiteJDBC db = new SQLiteJDBC();
+
 
     }
-
 
 
 }
